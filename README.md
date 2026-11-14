@@ -47,6 +47,7 @@ A Claude Code "skill" (a set of saved instructions) that tests the Finance Track
 | `README.md` | This introduction |
 | `expense-tracker/` | The Finance Tracker website |
 | `ARCHITECTURE.md` | How the Finance Tracker is built, explained for beginners |
+| `TESTING.md` | How to test the Finance Tracker |
 | `CLAUDE.md` | Notes that help Claude Code work on this project |
 | `.claude/skills/` | The tester skill |
 | `LICENSE.md` | The MIT License |
