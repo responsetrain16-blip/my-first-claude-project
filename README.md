@@ -17,3 +17,7 @@ This is my very first project using Claude Code and GitHub. I'm just getting sta
 As I learn, I'll add new files and try out new ideas. Each change will be saved with Git, so you can look back and see how the project grew step by step.
 
 If you're also new to coding, I hope this project shows that everyone starts somewhere. Thanks for stopping by!
+
+## License
+
+This project is shared under the [MIT License](LICENSE.md). That means anyone can use, copy, change and share the code, as long as they keep the copyright notice and the license text with it.
