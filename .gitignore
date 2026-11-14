@@ -1,0 +1,8 @@
+# macOS folder settings files
+.DS_Store
+
+# Personal Claude Code settings (not shared)
+.claude/settings.local.json
+
+# Installed packages (e.g. for running the tester skill)
+node_modules/
