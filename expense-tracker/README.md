@@ -19,7 +19,7 @@ It works on computers, tablets and phones. On a phone, you can add it to your ho
 - Move money between accounts with transfers. These don't count as spending.
 
 ### Budgets
-- Set a monthly limit per category. The app can suggest one based on your last 3 months.
+- Set a monthly limit per category. The website can suggest one based on your last 3 months.
 - Progress bars and clear labels show "On track", "Close to limit" or "Over budget".
 - Shows how much you can spend per day for the rest of the month.
 - Lists spending in categories that don't have a budget yet.
@@ -43,7 +43,7 @@ It works on computers, tablets and phones. On a phone, you can add it to your ho
 
 ### Privacy & security
 - **Your data never leaves your device.** There's no account, no server and no tracking. Everything is stored in your browser.
-- **PIN lock.** Ask for a 4–8 digit PIN when the app opens.
+- **PIN lock.** Ask for a 4–8 digit PIN when the website opens.
   - The PIN itself is never stored, only a secure fingerprint of it (PBKDF2-SHA-256).
   - Auto-locks after a period of inactivity, and pauses after 5 wrong attempts.
 - **Hide amounts.** Tap the eye icon to blur all numbers when others can see your screen.
@@ -82,7 +82,7 @@ To keep it safe, go to **Settings → Your data → Download backup** from time 
 | `js/ui.js` | Reusable pieces: pop-ups, notifications, the transaction form |
 | `js/security.js` | The PIN lock and auto-lock |
 | `js/views/*.js` | One file per page: dashboard, transactions, budgets, goals, reports, settings |
-| `js/app.js` | Starts the app and switches between pages |
+| `js/app.js` | Starts the website and switches between pages |
 
 No build tools or installs are needed. It's plain HTML, CSS and JavaScript.
 

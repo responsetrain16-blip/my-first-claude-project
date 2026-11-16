@@ -28,7 +28,7 @@ A website for keeping track of your money. With it you can:
 - Set monthly budgets and see how close you are to each limit
 - Create savings goals and track your progress
 - See charts and reports of where your money goes
-- Lock the app with a PIN and hide amounts on screen for privacy
+- Lock the website with a PIN and hide amounts on screen for privacy
 
 Your data is stored only in your own browser. Nothing is sent to a server.
 

@@ -109,7 +109,7 @@ Open the [live site](https://responsetrain16-blip.github.io/my-first-claude-proj
 - [ ] Press **Esc** in a pop-up. It closes.
 
 **Security**
-- [ ] Set a PIN in Settings, then lock the app. It asks for the PIN.
+- [ ] Set a PIN in Settings, then lock the website. It asks for the PIN.
 - [ ] Turn on **Hide amounts**. All money amounts are blurred.
 
 > The PIN lock needs `https` or `localhost`, so test it on the live site or through the local server from step 2, not by double-clicking `index.html`.
@@ -122,4 +122,4 @@ Open the [live site](https://responsetrain16-blip.github.io/my-first-claude-proj
    ```
    No output means no errors.
 2. Run the automated checks (or ask Claude Code to test). Make sure there are **0 failed**.
-3. Open the app and quickly try the thing you changed.
+3. Open the website and quickly try the thing you changed.

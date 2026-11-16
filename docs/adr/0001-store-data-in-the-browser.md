@@ -6,7 +6,7 @@ Accepted. This is how the Expense Tracker works today.
 
 ## Context
 
-The Expense Tracker holds private information: what you earn, what you spend, your account balances and your savings goals. That data has to be saved somewhere, so it's still there next time you open the app.
+The Expense Tracker holds private information: what you earn, what you spend, your account balances and your savings goals. That data has to be saved somewhere, so it's still there next time you open the website.
 
 There were two main ways to do this:
 
@@ -17,9 +17,9 @@ The project is built with plain HTML, CSS and JavaScript and published for free 
 
 ## Decision
 
-We store all of the app's data **only in the user's own browser**, using localStorage. Nothing is ever sent to a server.
+We store all of the website's data **only in the user's own browser**, using localStorage. Nothing is ever sent to a server.
 
-All data is kept together and saved under one name (`finance-tracker-v2`). Because data can be lost if the browser is cleared, the app lets people **download a backup file** and **restore** it later, from **Settings → Your data**.
+All data is kept together and saved under one name (`finance-tracker-v2`). Because data can be lost if the browser is cleared, the website lets people **download a backup file** and **restore** it later, from **Settings → Your data**.
 
 ## Consequences
 
@@ -32,5 +32,5 @@ All data is kept together and saved under one name (`finance-tracker-v2`). Becau
 **Bad:**
 - **No syncing between devices:** expenses added on your phone don't appear on your laptop.
 - **Data can be lost:** clearing your browser data, or losing the device, deletes everything unless you've downloaded a backup.
-- **Backups are up to you:** the app can't back up your data automatically, so you have to remember to download backups.
+- **Backups are up to you:** the website can't back up your data automatically, so you have to remember to download backups.
 - **Limited space:** browsers allow only a few megabytes per website. That's plenty for years of transactions, but not for things like photos of receipts.

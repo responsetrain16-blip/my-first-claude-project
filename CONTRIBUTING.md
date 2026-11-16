@@ -18,7 +18,7 @@ Open an **Issue** on GitHub (the "Issues" tab at the top of the repository) and 
 3. **Where:** your browser (e.g. Chrome, Safari) and whether you're on a phone or computer
 4. A **screenshot**, if it helps
 
-> ⚠️ **Never share your real financial data** in an issue or screenshot. Use the app's demo data instead (**Explore with demo data** on the empty Home page, or **Settings → Demo data**).
+> ⚠️ **Never share your real financial data** in an issue or screenshot. Use the website's demo data instead (**Explore with demo data** on the empty Home page, or **Settings → Demo data**).
 
 ## Making a change
 
@@ -27,7 +27,7 @@ Open an **Issue** on GitHub (the "Issues" tab at the top of the repository) and 
    ```
    git checkout -b fix-short-description
    ```
-3. **Open the app:** there's nothing to install. Open `expense-tracker/index.html` in your browser, or start a local server:
+3. **Open the website:** there's nothing to install. Open `expense-tracker/index.html` in your browser, or start a local server:
    ```
    python3 -m http.server 8799 --bind 127.0.0.1 --directory expense-tracker
    ```
@@ -45,9 +45,9 @@ Small, focused pull requests (one fix or feature each) are much easier to review
 
 ## Project rules
 
-These keep the app simple, safe and easy for beginners to follow.
+These keep the website simple, safe and easy for beginners to follow.
 
-- **Plain HTML, CSS and JavaScript only.** No frameworks, libraries, build tools or `npm` packages in the app.
+- **Plain HTML, CSS and JavaScript only.** No frameworks, libraries, build tools or `npm` packages in the website.
 - **Keep data private.** All data stays in the browser's `localStorage`. Never add code that sends data to a server or a third party.
 - **Build the page safely.** Create elements with `Utils.h()` and `Utils.svg()`. Never put user-typed text into `innerHTML`.
 - **Change data through `Store`.** Every change to data goes through a `Store` function. Totals and balances are calculated by `Finance`, never saved.
