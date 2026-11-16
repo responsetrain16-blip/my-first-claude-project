@@ -55,6 +55,7 @@ It works on computers, tablets and phones. On a phone, you can add it to your ho
 - Works with a keyboard and screen readers.
 - Keyboard shortcuts: **N** adds a transaction, **/** searches.
 - Demo data, so you can explore before adding your own.
+- **Installable.** Add it to your phone's home screen or your computer, where it opens in its own window like an app. It also works offline after your first visit.
 
 ## How to use it
 
@@ -63,6 +64,13 @@ It works on computers, tablets and phones. On a phone, you can add it to your ho
 **On your computer:** open the `expense-tracker` folder and double-click `index.html`.
 
 The PIN lock needs the online (https) address.
+
+**Install it like an app:**
+- **Android / Chrome / Edge:** go to **Settings → Install** and tap **Install** (or use the browser menu → "Install app" / "Add to Home Screen").
+- **iPhone / iPad:** open the online link in Safari, tap the **Share** button, then **Add to Home Screen**.
+- **Mac Safari:** File → Add to Dock.
+
+Installing needs the online (https) address too. Your data stays the same: the installed version uses the same browser storage.
 
 ## Back up your data!
 
@@ -83,6 +91,9 @@ To keep it safe, go to **Settings → Your data → Download backup** from time 
 | `js/security.js` | The PIN lock and auto-lock |
 | `js/views/*.js` | One file per page: dashboard, transactions, budgets, goals, reports, settings |
 | `js/app.js` | Starts the website and switches between pages |
+| `manifest.webmanifest` | The website's "ID card" for installing: name, colours and icons |
+| `sw.js` | The *service worker*: keeps a copy of the website's files so it opens offline |
+| `icons/` | Home-screen icons |
 
 No build tools or installs are needed. It's plain HTML, CSS and JavaScript.
 

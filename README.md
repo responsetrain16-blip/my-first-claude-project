@@ -29,6 +29,7 @@ A website for keeping track of your money. With it you can:
 - Create savings goals and track your progress
 - See charts and reports of where your money goes
 - Lock the website with a PIN and hide amounts on screen for privacy
+- Install it on your phone or computer like an app, and use it without internet
 
 Your data is stored only in your own browser. Nothing is sent to a server.
 

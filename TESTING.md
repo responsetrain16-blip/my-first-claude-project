@@ -112,7 +112,11 @@ Open the [live site](https://responsetrain16-blip.github.io/my-first-claude-proj
 - [ ] Set a PIN in Settings, then lock the website. It asks for the PIN.
 - [ ] Turn on **Hide amounts**. All money amounts are blurred.
 
-> The PIN lock needs `https` or `localhost`, so test it on the live site or through the local server from step 2, not by double-clicking `index.html`.
+**Installing & offline**
+- [ ] On the live site, go to **Settings → Install** and install it. It opens in its own window with the 💰 icon.
+- [ ] Open the installed version, turn off Wi-Fi, and reopen it. It still opens and shows your data.
+
+> The PIN lock and installing need `https` or `localhost`, so test it on the live site or through the local server from step 2, not by double-clicking `index.html`.
 
 ## Before you push changes
 

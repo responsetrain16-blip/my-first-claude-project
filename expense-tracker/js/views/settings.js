@@ -173,6 +173,22 @@ Views.settings = (() => {
           h("input", { type: "checkbox", role: "switch", checked: s.privacy, "aria-label": "Hide amounts", onChange: (e) => App.setPrivacy(e.target.checked) }),
           h("span", { class: "switch-track" })))));
 
+    // Install on this device
+    let installControl;
+    let installHelp;
+    if (App.isInstalled()) {
+      installHelp = "Finance Tracker is installed. It opens from your home screen or app list.";
+      installControl = h("span", { class: "badge badge-done" }, icon("check", 14), "Installed");
+    } else if (App.canInstall()) {
+      installHelp = "Add it to your home screen or computer. It opens in its own window and works without internet.";
+      installControl = h("button", { class: "btn btn-primary btn-small", type: "button", onClick: App.install }, icon("download", 16), "Install");
+    } else if (/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)) {
+      installHelp = "In Safari, tap the Share button, then \"Add to Home Screen\".";
+    } else {
+      installHelp = "Use your browser's menu and choose \"Install\" or \"Add to Home Screen\". (In Safari on a Mac: File → Add to Dock.)";
+    }
+    root.append(UI.card("Install", {}, row("Install on this device", installHelp, installControl || null)));
+
     // Security
     const autoLock = UI.select([["1", "After 1 minute"], ["5", "After 5 minutes"], ["15", "After 15 minutes"], ["30", "After 30 minutes"], ["0", "Never"]], String(s.autoLockMinutes), { "aria-label": "Auto-lock" });
     autoLock.addEventListener("change", () => Store.updateSettings({ autoLockMinutes: Number(autoLock.value) }));

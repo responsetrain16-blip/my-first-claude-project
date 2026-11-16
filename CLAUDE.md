@@ -50,4 +50,6 @@ Globals: `Utils`, `Store`, `Finance`, `Charts`, `UI`, `Views`, `Security`, `App`
 
 **Charts** are hand-drawn SVG in `charts.js` (no library). Colors come from CSS variables in `css/styles.css` (`--series-1` blue = income, `--series-2` orange = spending, validated for colour-blind safety in light and dark). Status colours (good/warning/critical) are reserved for budget/goal state and always paired with an icon and label. `Charts.card()` provides the Chart/Table toggle.
 
+**Installable (PWA).** `manifest.webmanifest` + `icons/` make it installable; `sw.js` is a network-first service worker that caches the app shell for offline use (registered by `setUpInstall()` in `app.js`, only on secure, non-`file:` origins). When adding or renaming a file, update `FILES` in `sw.js` and bump `CACHE`. Settings → Install uses the `beforeinstallprompt` event via `App.canInstall()` / `App.install()`.
+
 **Styling.** All colours are tokens on `:root` in `css/styles.css`, with dark values duplicated under `prefers-color-scheme: dark` (guarded by `:not([data-theme="light"])`) and `[data-theme="dark"]` (set by the theme setting). Layout switches to bottom navigation + floating "+" button below 860px.

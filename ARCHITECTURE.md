@@ -19,7 +19,10 @@ my-first-claude-project/
 ├── expense-tracker/        The Finance Tracker website
 │   ├── index.html          Page skeleton
 │   ├── css/styles.css      All the styling
-│   └── js/                 All the behaviour (see below)
+│   ├── js/                 All the behaviour (see below)
+│   ├── manifest.webmanifest  Lets the website be installed like an app
+│   ├── sw.js               Keeps a copy of the files for offline use
+│   └── icons/              Home-screen icons
 └── .claude/skills/
     └── expense-tracker-tester/   A Claude Code skill that tests the website
 ```
@@ -105,6 +108,15 @@ To add a new page: create a file in `js/views/`, add its `<script>` tag in `inde
 - On screens narrower than 860px (phones and small tablets), the side menu becomes a bottom navigation bar with a floating "+" button.
 - Chart colours were checked for colour-blind safety: **blue means income** and **orange means spending**. Green, amber and red are kept only for budget and goal status, and always come with an icon and a label, never colour alone.
 - Every chart has a Chart/Table switch, so the numbers can always be read as a table too.
+
+## Installing and offline use
+
+The website can be **installed** on a phone or computer, where it gets its own icon and opens in its own window like an app. This kind of website is called a *PWA* (Progressive Web App). It's still plain HTML, CSS and JavaScript, with two extra files:
+
+- **`manifest.webmanifest`** is a small "ID card" that tells the device the website's name, colours and icons (in `icons/`).
+- **`sw.js`** is a *service worker*, a helper the browser runs in the background. It keeps a copy of the website's **files** (not your data) and always tries the internet first, so you get the newest version when you're online and the saved copy when you're not.
+
+The service worker is switched on by `setUpInstall()` in `app.js`, and the **Settings → Install** card shows an Install button when the browser allows it. Installing only works on `https` or `localhost`, not when `index.html` is opened straight from your computer. If you add a new file, add it to the `FILES` list in `sw.js` and change the `CACHE` name so devices pick up the new list.
 
 ## Testing
 

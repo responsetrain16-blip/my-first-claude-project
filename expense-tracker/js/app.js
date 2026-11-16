@@ -140,6 +140,7 @@ const App = (() => {
       }
     });
 
+    setUpInstall();
     navigate();
     Security.startAutoLock();
 
@@ -147,7 +148,45 @@ const App = (() => {
     else document.getElementById("app").hidden = false;
   }
 
-  return { start, render, applyTheme, setPrivacy };
+  // ---------- Installing on a phone or computer ----------
+  // The browser offers installing only on https or localhost, not when
+  // index.html is opened straight from your computer (file://).
+  let installPrompt = null;
+
+  function setUpInstall() {
+    if ("serviceWorker" in navigator && window.isSecureContext && location.protocol !== "file:") {
+      navigator.serviceWorker.register("sw.js").catch(() => { /* offline support is optional */ });
+    }
+    // Chrome and Edge tell us when the website can be installed
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault();
+      installPrompt = event;
+      if (current === "settings") render();
+    });
+    window.addEventListener("appinstalled", () => {
+      installPrompt = null;
+      UI.toast("Installed! Look for Finance Tracker on your home screen.");
+      if (current === "settings") render();
+    });
+  }
+
+  function isInstalled() {
+    return window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  }
+
+  function canInstall() {
+    return installPrompt !== null;
+  }
+
+  async function install() {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    await installPrompt.userChoice;
+    installPrompt = null;
+    if (current === "settings") render();
+  }
+
+  return { start, render, applyTheme, setPrivacy, isInstalled, canInstall, install };
 })();
 
 document.addEventListener("DOMContentLoaded", App.start);
