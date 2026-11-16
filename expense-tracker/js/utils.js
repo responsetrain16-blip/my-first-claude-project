@@ -218,7 +218,11 @@ const Utils = (() => {
 
   function parseAmount(text) {
     if (typeof text === "number") return text;
-    const cleaned = String(text).trim().replace(/[^\d.,-]/g, "").replace(",", ".");
+    // Allow spaces and currency symbols like $ or €, but nothing else:
+    // "12abc" is a typing mistake, so it should not quietly become 12.
+    const stripped = String(text).replace(/[\s\p{Sc}]/gu, "");
+    if (/[^\d.,-]/.test(stripped)) return NaN;
+    const cleaned = stripped.replace(",", ".");
     const value = Number(cleaned);
     return Number.isFinite(value) ? Math.round(value * 100) / 100 : NaN;
   }

@@ -91,6 +91,15 @@ const App = (() => {
     document.getElementById("lock-btn").append(icon("lock"));
     document.getElementById("settings-btn").append(icon("settings"));
     for (const id of ["add-btn", "fab"]) document.getElementById(id).addEventListener("click", () => UI.openTransactionForm());
+
+    // On phones, tuck the "+" button away while scrolling down so it doesn't
+    // cover amounts, and bring it back when scrolling up.
+    let lastScroll = window.scrollY;
+    window.addEventListener("scroll", () => {
+      const now = window.scrollY;
+      document.getElementById("fab").classList.toggle("is-hidden", now > lastScroll && now > 80);
+      lastScroll = now;
+    }, { passive: true });
     document.getElementById("lock-btn").addEventListener("click", Security.lock);
     document.getElementById("privacy-btn").addEventListener("click", () => setPrivacy(!Store.state.settings.privacy));
     setPrivacy(Store.state.settings.privacy);

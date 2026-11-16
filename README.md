@@ -32,6 +32,13 @@ A website for keeping track of your money. With it you can:
 
 Your data is stored only in your own browser. Nothing is sent to a server.
 
+<p>
+  <img src="docs/screenshots/dashboard-desktop.png" alt="Finance Tracker dashboard on a computer, showing total balance, this month's income and spending, budgets and spending by category" width="68%">
+  <img src="docs/screenshots/dashboard-phone.png" alt="The same dashboard on a phone, with the bottom menu and + button" width="25%">
+</p>
+
+<em>Screenshots use the website's built-in demo data, not real finances.</em>
+
 **Try it live:** https://responsetrain16-blip.github.io/my-first-claude-project/expense-tracker/
 
 You can also open `expense-tracker/index.html` on your computer. There's nothing to install. See the [Finance Tracker README](expense-tracker/README.md) for details.
@@ -50,6 +57,7 @@ A Claude Code "skill" (a set of saved instructions) that tests the Finance Track
 | `TESTING.md` | How to test the Finance Tracker |
 | `CONTRIBUTING.md` | How others can report bugs and suggest changes |
 | `docs/adr/` | Decision records (ADRs): notes explaining big decisions about how the project is built |
+| `docs/screenshots/` | Pictures of the website used in this README |
 | `CLAUDE.md` | Notes that help Claude Code work on this project |
 | `.claude/skills/` | The tester skill |
 | `LICENSE.md` | The MIT License |

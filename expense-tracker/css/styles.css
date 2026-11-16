@@ -392,6 +392,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .tx-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--text-2); }
 .tx-repeat { display: inline-flex; color: var(--accent); }
 .tag { background: var(--surface-2); padding: 0 6px; border-radius: 6px; font-size: 0.75rem; }
+.tag-upcoming { border: 1px solid var(--border); font-weight: 600; }
 .tx-amount { font-weight: 650; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .tx-amount.income { color: var(--positive); }
 .tx-amount.transfer { color: var(--text-2); }
@@ -936,7 +937,10 @@ button.bar-row:hover { background: var(--hover); }
     color: var(--on-accent);
     box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 45%, transparent);
     cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
   }
+  /* Slides out of the way while scrolling down (see app.js) */
+  .fab.is-hidden { transform: translateY(24px) scale(0.8); opacity: 0; pointer-events: none; }
 
   .toasts { bottom: calc(150px + env(safe-area-inset-bottom)); }
   .hero { padding: 20px; }

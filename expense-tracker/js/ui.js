@@ -144,6 +144,8 @@ const UI = (() => {
           h("span", { class: "tx-title", text: title }),
           h("span", { class: "tx-meta" },
             meta.filter(Boolean).join(" · "),
+            // Dated after today: still counted in totals, but labelled so it isn't a surprise
+            t.date > Utils.todayStr() ? h("span", { class: "tag tag-upcoming", text: "Upcoming" }) : null,
             t.recurringId ? h("span", { class: "tx-repeat", title: "Repeating" }, icon("repeat", 12)) : null,
             t.tags.map((tag) => h("span", { class: "tag", text: "#" + tag })))),
         h("span", { class: `tx-amount ${t.type}` }, money(sign * t.amount, { sign: sign > 0 }))));
