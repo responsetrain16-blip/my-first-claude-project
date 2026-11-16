@@ -23,8 +23,9 @@ my-first-claude-project/
 │   ├── manifest.webmanifest  Lets the website be installed like an app
 │   ├── sw.js               Keeps a copy of the files for offline use
 │   └── icons/              Home-screen icons
-└── .claude/skills/
-    └── expense-tracker-tester/   A Claude Code skill that tests the website
+├── plugins/
+│   └── expense-tracker-tester/   A Claude Code plugin that tests the website
+└── .claude-plugin/marketplace.json  Lets Claude Code install the plugin from this repository
 ```
 
 ## How the website's code is organised
@@ -120,4 +121,4 @@ The service worker is switched on by `setUpInstall()` in `app.js`, and the **Set
 
 ## Testing
 
-There's no automatic test runner. Instead, the **`expense-tracker-tester` skill** in `.claude/skills/` tells Claude Code how to test the website. Its script opens the website in a fresh, temporary Chrome window (so your real data is never touched) and checks adding, editing and deleting transactions, input validation, exact calculations, monthly summaries, and the layout on phone and desktop in light and dark mode. See `CLAUDE.md` for the commands.
+There's no automatic test runner. Instead, the **`expense-tracker-tester` plugin** in `plugins/` tells Claude Code how to test the website. Its script opens the website in a fresh, temporary Chrome window (so your real data is never touched) and checks adding, editing and deleting transactions, input validation, exact calculations, monthly summaries, and the layout on phone and desktop in light and dark mode. See `CLAUDE.md` for the commands.

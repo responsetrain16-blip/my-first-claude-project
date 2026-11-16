@@ -1,0 +1,19 @@
+{
+  "name": "my-first-claude-project",
+  "owner": {
+    "name": "responsetrain16-blip",
+    "url": "https://github.com/responsetrain16-blip"
+  },
+  "metadata": {
+    "description": "Plugins from my first Claude Code project."
+  },
+  "plugins": [
+    {
+      "name": "expense-tracker-tester",
+      "source": "./plugins/expense-tracker-tester",
+      "description": "QA tester for the Finance Tracker website: tests it in a fresh Chrome profile and reports problems without changing the code.",
+      "version": "1.0.0",
+      "category": "testing"
+    }
+  ]
+}

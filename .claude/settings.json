@@ -1,0 +1,6 @@
+{
+  "enabledPlugins": {
+    "expense-tracker-tester@my-first-claude-project": true,
+    "frontend-design@anthropic-plugin-directory": true
+  }
+}

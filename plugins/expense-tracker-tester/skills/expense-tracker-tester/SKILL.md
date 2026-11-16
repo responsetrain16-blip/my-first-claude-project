@@ -22,7 +22,8 @@ The bundled script `scripts/check.js` (next to this file) drives Chrome and cove
    `python3 -m http.server 8799 --bind 127.0.0.1 --directory expense-tracker` (run in the background)
 2. In a temp directory, install the browser driver once: `npm install puppeteer-core@23.11.1`
 3. Run it, pointing Node at that install:
-   `NODE_PATH=<temp>/node_modules node .claude/skills/expense-tracker-tester/scripts/check.js http://127.0.0.1:8799/index.html <screenshot-dir>`
+   `NODE_PATH=<temp>/node_modules node <this skill's base directory>/scripts/check.js http://127.0.0.1:8799/index.html <screenshot-dir>`
+   (In this repository that's `plugins/expense-tracker-tester/skills/expense-tracker-tester/scripts/check.js`.)
    - Set `CHROME_PATH` if Chrome isn't at `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`.
 4. Each line prints `PASS`, `FAIL` or `NOTE`. Screenshots are saved to `<screenshot-dir>`.
 

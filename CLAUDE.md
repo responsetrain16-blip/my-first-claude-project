@@ -14,10 +14,10 @@ Deployed with GitHub Pages from `main` (repo root): https://responsetrain16-blip
   `python3 -m http.server 8799 --bind 127.0.0.1 --directory expense-tracker`
   The PIN lock needs a secure context (https or localhost), so serve it rather than using `file://` when testing security features.
 - **Syntax check (the only "lint"):** `for f in expense-tracker/js/*.js expense-tracker/js/views/*.js; do node --check "$f"; done`
-- **Tests:** there is no test runner. The `expense-tracker-tester` skill (`.claude/skills/expense-tracker-tester/`) holds the QA checklist and a Puppeteer script that drives Chrome in a fresh profile and checks adding/editing/deleting, validation, exact calculations, monthly summaries and UI at phone/desktop widths in light/dark mode:
+- **Tests:** there is no test runner. The `expense-tracker-tester` plugin (`plugins/expense-tracker-tester/`, enabled for this project in `.claude/settings.json`; also runnable as `/test-tracker`) holds the QA checklist and a Puppeteer script that drives Chrome in a fresh profile and checks adding/editing/deleting, validation, exact calculations, monthly summaries and UI at phone/desktop widths in light/dark mode:
   ```
   # once, in a temp dir (never in the repo): npm install puppeteer-core@23.11.1
-  NODE_PATH=<temp>/node_modules node .claude/skills/expense-tracker-tester/scripts/check.js http://127.0.0.1:8799/index.html <screenshot-dir>
+  NODE_PATH=<temp>/node_modules node plugins/expense-tracker-tester/skills/expense-tracker-tester/scripts/check.js http://127.0.0.1:8799/index.html <screenshot-dir>
   ```
   It prints PASS/FAIL/NOTE per check; there's no way to run a single check other than editing a copy of the script. The skill's rule is "test, don't change": report findings and only fix what the user asks for.
 

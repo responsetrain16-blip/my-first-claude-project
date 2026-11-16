@@ -1,0 +1,13 @@
+{
+  "name": "expense-tracker-tester",
+  "version": "1.0.0",
+  "description": "QA tester for the Finance Tracker website: checks adding, editing and deleting transactions, validation, calculations, monthly summaries and UI, then reports problems without changing the code.",
+  "author": {
+    "name": "responsetrain16-blip",
+    "url": "https://github.com/responsetrain16-blip"
+  },
+  "homepage": "https://github.com/responsetrain16-blip/my-first-claude-project",
+  "repository": "https://github.com/responsetrain16-blip/my-first-claude-project",
+  "license": "MIT",
+  "keywords": ["testing", "qa", "expense-tracker", "puppeteer"]
+}

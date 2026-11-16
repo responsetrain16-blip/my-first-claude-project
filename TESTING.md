@@ -10,13 +10,15 @@ This guide explains how to check that the Finance Tracker works properly. There 
 
 ## 1. Ask Claude Code (easiest)
 
-This project includes a Claude Code **skill** called `expense-tracker-tester`. A skill is a set of saved instructions that tells Claude how to do a specific job.
+This project includes a Claude Code **plugin** called `expense-tracker-tester` (in the `plugins/` folder). A plugin is a package of add-ons for Claude Code. This one contains a **skill**, a set of saved instructions that tells Claude how to test the website.
 
 In the terminal, inside this project, start Claude Code and type:
 
 ```
-test the expense tracker
+/test-tracker
 ```
+
+or just ask: *"test the expense tracker"*. You can add an area to focus on, e.g. `/test-tracker budgets`.
 
 Claude will run all the checks, look at the screenshots, and give you a report with:
 
@@ -47,7 +49,7 @@ npm install puppeteer-core@23.11.1
 **Step 3: run the checks** from the project folder, in a second terminal window:
 
 ```
-NODE_PATH=~/tracker-test/node_modules node .claude/skills/expense-tracker-tester/scripts/check.js http://127.0.0.1:8799/index.html ~/tracker-test/screenshots
+NODE_PATH=~/tracker-test/node_modules node plugins/expense-tracker-tester/skills/expense-tracker-tester/scripts/check.js http://127.0.0.1:8799/index.html ~/tracker-test/screenshots
 ```
 
 If Chrome is installed somewhere unusual, add `CHROME_PATH="/path/to/chrome"` at the start of that command.

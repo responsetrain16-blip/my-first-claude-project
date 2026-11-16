@@ -44,9 +44,17 @@ Your data is stored only in your own browser. Nothing is sent to a server.
 
 You can also open `expense-tracker/index.html` on your computer. There's nothing to install. See the [Finance Tracker README](expense-tracker/README.md) for details.
 
-### 🧪 Tester skill for Claude Code
+### 🧪 Tester plugin for Claude Code
 
-A Claude Code "skill" (a set of saved instructions) that tests the Finance Tracker for me. It checks adding, editing and deleting transactions, input validation, calculations, monthly summaries and the layout, then reports any problems without changing the code. To use it, ask Claude Code to "test the expense tracker".
+A Claude Code **plugin** (a package of add-ons you can install into Claude Code) that tests the Finance Tracker for me. It checks adding, editing and deleting transactions, input validation, calculations, monthly summaries and the layout, then reports any problems without changing the code.
+
+To use it, type `/test-tracker` in Claude Code, or just ask it to "test the expense tracker".
+
+It's already switched on inside this project. To install it anywhere else, run this in Claude Code:
+
+```
+/plugin install expense-tracker-tester --marketplace responsetrain16-blip/my-first-claude-project
+```
 
 ## Project files
 
@@ -60,7 +68,8 @@ A Claude Code "skill" (a set of saved instructions) that tests the Finance Track
 | `docs/adr/` | Decision records (ADRs): notes explaining big decisions about how the project is built |
 | `docs/screenshots/` | Pictures of the website used in this README |
 | `CLAUDE.md` | Notes that help Claude Code work on this project |
-| `.claude/skills/` | The tester skill |
+| `plugins/expense-tracker-tester/` | The tester plugin (its skill, `/test-tracker` command and test script) |
+| `.claude-plugin/marketplace.json` | Lists the plugin so Claude Code can install it from this repository |
 | `LICENSE.md` | The MIT License |
 
 ## License
