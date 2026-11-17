@@ -58,16 +58,20 @@ It's already switched on inside this project. To install it anywhere else, run t
 
 ### 🔍 PR check plugin for Claude Code
 
-A plugin that checks a **pull request** (a request to add changes to the project) before it's merged, or my own changes before I push them. It runs the same checks I use before every push:
+A plugin that reviews a **pull request** (a request to add changes to the project) before it's merged, or my own changes before I push them. It follows 10 review steps:
 
-1. **Unwanted files and secrets:** no `.DS_Store`, personal settings, passwords or keys
-2. **Syntax:** no typing mistakes in JavaScript or JSON files
-3. **Project rules:** safe page building, nothing sent over the internet, no outside libraries, new files added to the offline list
-4. **Plugins:** plugin files are valid
-5. **Website tests:** the tester plugin's checks, plus trying the change in a real browser
-6. **A read-through:** does the change do what it says, and do the docs still match the code?
+1. **Understand the PR:** what is it supposed to do?
+2. **Review changed files:** which files were added, changed or deleted, plus automatic checks for unwanted files and typing mistakes
+3. **Check code changes:** wrong logic, repeated code, bugs, and the project's rules
+4. **Verify functionality:** try the change in a real browser, on phone and computer sizes
+5. **Check validation:** bad input is rejected with a clear message
+6. **Check existing features:** the tester plugin's checks still pass
+7. **Check security:** no passwords or keys, and money data never sent over the internet
+8. **Run tests:** every test is actually run, with the numbers recorded
+9. **Check documentation:** the docs still match the website
+10. **Prepare review report:** summary, files reviewed, passed and failed checks, issues and suggestions
 
-It finishes with a verdict: ✅ **Ready to merge**, ⚠️ **Ready after small fixes**, or ❌ **Not ready**. It never changes code itself.
+It finishes with a final recommendation: ✅ **Approve**, ❌ **Request Changes** or 🔍 **Needs Further Review**. It never marks a check as passed without verifying it, never approves on its own, and never changes code itself.
 
 To use it, type `/pr-check` in Claude Code, followed by a PR number (e.g. `/pr-check 3`), a branch name, or nothing to check your current changes. Or just ask "check this PR".
 
