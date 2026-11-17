@@ -259,6 +259,10 @@ const UI = (() => {
       if (!(amount > 0)) return showError("Please enter an amount greater than 0.", amountInput);
       if (amount > 1e12) return showError("That amount is too large.", amountInput);
       if (!Utils.isDateStr(dateInput.value)) return showError("Please choose a valid date.", dateInput);
+      // A date more than a year ahead is almost always a typo (e.g. 2062 instead of 2026)
+      if (dateInput.value > Utils.addDays(Utils.todayStr(), 366)) {
+        return showError("That date is more than a year away. Please check the year.", dateInput);
+      }
       if (draft.type === "transfer" && accountSelect.value === toAccountSelect.value) {
         return showError("Choose two different accounts for a transfer.", toAccountSelect);
       }
