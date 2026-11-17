@@ -14,6 +14,13 @@
       "description": "QA tester for the Finance Tracker website: tests it in a fresh Chrome profile and reports problems without changing the code.",
       "version": "1.0.0",
       "category": "testing"
+    },
+    {
+      "name": "pr-check",
+      "source": "./plugins/pr-check",
+      "description": "Checks a pull request or local changes before merging and reports whether it's ready, without changing any code.",
+      "version": "1.0.0",
+      "category": "development"
     }
   ]
 }

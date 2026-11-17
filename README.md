@@ -56,6 +56,27 @@ It's already switched on inside this project. To install it anywhere else, run t
 /plugin install expense-tracker-tester --marketplace responsetrain16-blip/my-first-claude-project
 ```
 
+### 🔍 PR check plugin for Claude Code
+
+A plugin that checks a **pull request** (a request to add changes to the project) before it's merged, or my own changes before I push them. It runs the same checks I use before every push:
+
+1. **Unwanted files and secrets:** no `.DS_Store`, personal settings, passwords or keys
+2. **Syntax:** no typing mistakes in JavaScript or JSON files
+3. **Project rules:** safe page building, nothing sent over the internet, no outside libraries, new files added to the offline list
+4. **Plugins:** plugin files are valid
+5. **Website tests:** the tester plugin's checks, plus trying the change in a real browser
+6. **A read-through:** does the change do what it says, and do the docs still match the code?
+
+It finishes with a verdict: ✅ **Ready to merge**, ⚠️ **Ready after small fixes**, or ❌ **Not ready**. It never changes code itself.
+
+To use it, type `/pr-check` in Claude Code, followed by a PR number (e.g. `/pr-check 3`), a branch name, or nothing to check your current changes. Or just ask "check this PR".
+
+To install it anywhere else:
+
+```
+/plugin install pr-check --marketplace responsetrain16-blip/my-first-claude-project
+```
+
 ## Project files
 
 | File or folder | What it is |
@@ -69,7 +90,8 @@ It's already switched on inside this project. To install it anywhere else, run t
 | `docs/screenshots/` | Pictures of the website used in this README |
 | `CLAUDE.md` | Notes that help Claude Code work on this project |
 | `plugins/expense-tracker-tester/` | The tester plugin (its skill, `/test-tracker` command and test script) |
-| `.claude-plugin/marketplace.json` | Lists the plugin so Claude Code can install it from this repository |
+| `plugins/pr-check/` | The PR check plugin (its skill and automatic checks script) |
+| `.claude-plugin/marketplace.json` | Lists the plugins so Claude Code can install them from this repository |
 | `LICENSE.md` | The MIT License |
 
 ## License

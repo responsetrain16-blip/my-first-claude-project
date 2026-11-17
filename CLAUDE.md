@@ -21,6 +21,8 @@ Deployed with GitHub Pages from `main` (repo root): https://responsetrain16-blip
   ```
   It prints PASS/FAIL/NOTE per check; there's no way to run a single check other than editing a copy of the script. The skill's rule is "test, don't change": report findings and only fix what the user asks for.
 
+- **PR check:** the `pr-check` plugin (`plugins/pr-check/`, enabled in `.claude/settings.json`; `/pr-check [PR number | branch]`) reviews changes before merge/push. Its script `plugins/pr-check/skills/pr-check/scripts/pr-check.sh [base]` (default base `origin/main`, includes uncommitted files, bash 3.2-compatible) checks junk files, secrets, JS/JSON syntax, the security/data rules below on *added lines only*, `index.html`/`sw.js` registration of new files, and `claude plugin validate`; the skill adds the website tests, a browser try-out and a diff read-through. When you add a project rule, add a matching check there.
+
 ## Architecture (`expense-tracker/`)
 
 **Classic scripts sharing globals, not ES modules** — so the app works when opened from `file://`. Load order in `index.html` matters; each file may only use globals defined by files above it:

@@ -122,6 +122,10 @@ Open the [live site](https://responsetrain16-blip.github.io/my-first-claude-proj
 
 ## Before you push changes
 
+**Easiest:** type `/pr-check` in Claude Code. The PR check plugin runs all of the steps below (and more) and tells you whether your changes are ready. To check a pull request on GitHub, add its number, e.g. `/pr-check 3`.
+
+Or do it by hand:
+
 1. Check every JavaScript file for typing mistakes (syntax errors):
    ```
    for f in expense-tracker/js/*.js expense-tracker/js/views/*.js; do node --check "$f"; done

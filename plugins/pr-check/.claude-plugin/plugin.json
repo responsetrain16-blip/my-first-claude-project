@@ -1,0 +1,13 @@
+{
+  "name": "pr-check",
+  "version": "1.0.0",
+  "description": "Checks a pull request or local changes before merging: junk files, secrets, syntax, Finance Tracker code rules, offline/install files, plugin validity, website tests, a browser try-out and a code read-through, then reports whether it's ready.",
+  "author": {
+    "name": "responsetrain16-blip",
+    "url": "https://github.com/responsetrain16-blip"
+  },
+  "homepage": "https://github.com/responsetrain16-blip/my-first-claude-project",
+  "repository": "https://github.com/responsetrain16-blip/my-first-claude-project",
+  "license": "MIT",
+  "keywords": ["pull-request", "code-review", "ci", "checks"]
+}

@@ -24,8 +24,9 @@ my-first-claude-project/
 │   ├── sw.js               Keeps a copy of the files for offline use
 │   └── icons/              Home-screen icons
 ├── plugins/
-│   └── expense-tracker-tester/   A Claude Code plugin that tests the website
-└── .claude-plugin/marketplace.json  Lets Claude Code install the plugin from this repository
+│   ├── expense-tracker-tester/   A Claude Code plugin that tests the website
+│   └── pr-check/                A Claude Code plugin that checks pull requests before merging
+└── .claude-plugin/marketplace.json  Lets Claude Code install the plugins from this repository
 ```
 
 ## How the website's code is organised

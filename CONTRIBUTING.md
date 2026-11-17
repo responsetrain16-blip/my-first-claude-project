@@ -33,7 +33,7 @@ Open an **Issue** on GitHub (the "Issues" tab at the top of the repository) and 
    ```
    then visit http://127.0.0.1:8799/index.html
 4. **Make your change.** Read [ARCHITECTURE.md](ARCHITECTURE.md) first to see how the code fits together.
-5. **Test it** by following [TESTING.md](TESTING.md). At a minimum, check for syntax errors:
+5. **Test it** by following [TESTING.md](TESTING.md). If you use Claude Code, `/pr-check` runs all the checks for you. At a minimum, check for syntax errors:
    ```
    for f in expense-tracker/js/*.js expense-tracker/js/views/*.js; do node --check "$f"; done
    ```
