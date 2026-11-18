@@ -90,6 +90,7 @@ Open the [live site](https://responsetrain16-blip.github.io/my-first-claude-proj
 
 **Validation**
 - [ ] Try saving with an empty amount, `0`, `-5` and `abc`. Each shows an error and nothing is saved.
+- [ ] Pick a date more than a year from today. It shows "That date is more than a year away" and nothing is saved.
 - [ ] Enter `12.345`. It's saved as `12.35`.
 - [ ] Try a transfer from an account to the same account. It's refused.
 
