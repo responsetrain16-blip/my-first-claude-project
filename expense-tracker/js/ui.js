@@ -251,6 +251,9 @@ const UI = (() => {
       error.textContent = message;
       error.hidden = false;
       input?.focus();
+      // On small screens the message can end up below the bottom edge, so
+      // scroll just enough to show all of it
+      error.scrollIntoView({ block: "nearest" });
     }
 
     form.addEventListener("submit", (event) => {

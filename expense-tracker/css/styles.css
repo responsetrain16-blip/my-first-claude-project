@@ -465,6 +465,8 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--a
   background: color-mix(in srgb, var(--critical) 12%, transparent);
   color: var(--critical-text);
   font-size: 0.9rem;
+  /* Leave a gap below the message when it's scrolled into view (see ui.js) */
+  scroll-margin-bottom: 24px;
 }
 .form-footer {
   display: flex;
