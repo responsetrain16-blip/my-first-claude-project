@@ -45,6 +45,8 @@ Globals: `Utils`, `Store`, `Finance`, `Charts`, `UI`, `Views`, `Security`, `App`
 - Repeating transactions are rules in `state.recurring` (`template` + `nextDate`); `Store.processRecurring()` materialises due ones on start-up and when the tab becomes visible.
 - `Store.sanitize()` validates everything loaded from storage or a backup file — extend it when adding fields.
 - `migrateLegacy()` imports data from the first version of the app (`expense-tracker-transactions` key); keep it working.
+- **Undo for big changes:** wrap any action that replaces or removes lots of data in `App.safely(label, change, doneMessage)`, which saves a safety copy (`finance-tracker-v2-safety`, latest only) and offers Undo. `Store.resetAll()` always deletes the safety copy (so "Forgot PIN" can't be undone); only Settings' erase passes `{ allowUndo: true }` for an in-memory, 10-second Undo.
+- `settings.lastBackupAt` / `backupReminderSnoozedUntil` drive the Home backup reminder; `App.downloadBackup()` updates them.
 
 **Security conventions**
 - Build DOM only with `Utils.h()` / `Utils.svg()` (sets text via `textContent`); never use `innerHTML` with user data.

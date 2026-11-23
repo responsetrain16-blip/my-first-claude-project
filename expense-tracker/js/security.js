@@ -184,8 +184,11 @@ const Security = (() => {
       h("div", { class: "lock-actions" },
         h("button", { class: "btn btn-ghost", type: "button", text: "Go back", onClick: () => screen.replaceChildren(keepBox) }),
         h("button", { class: "btn btn-danger", type: "button", text: "Erase all data", onClick: () => {
-          Store.resetAll();
+          Store.resetAll(); // also deletes the Undo safety copy, so there's no way back in
           unlock();
+          // The page was drawn before locking and still shows the old data:
+          // redraw it now so none of the erased data stays on screen.
+          Store.commit();
           UI.toast("All data erased. You're starting fresh.");
         } })));
     screen.replaceChildren(box);

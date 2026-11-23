@@ -74,6 +74,40 @@ const App = (() => {
     button.title = on ? "Show amounts" : "Hide amounts";
   }
 
+  // After all data is swapped (restore, undo, erase), use its currency, theme and privacy setting.
+  function applySettings() {
+    Utils.setCurrency(Store.state.settings.currency);
+    applyTheme();
+    setPrivacy(Store.state.settings.privacy);
+  }
+
+  // ---------- Backups & Undo for big changes ----------
+  function downloadBackup() {
+    Utils.download(`finance-backup-${Utils.todayStr()}.json`, Store.exportData(), "application/json");
+    Store.updateSettings({ lastBackupAt: Utils.todayStr(), backupReminderSnoozedUntil: null });
+    UI.toast("Backup downloaded. Keep it somewhere safe.");
+  }
+
+  // Runs a big change (e.g. restore, demo data, deleting a category or goal).
+  // A safety copy is saved first, and the message afterwards offers Undo.
+  // If the copy can't be saved, it asks before going ahead.
+  async function safely(label, change, doneMessage) {
+    const saved = Store.saveSafetyCopy(label);
+    if (!saved && !(await UI.confirm({
+      title: "Couldn't make a safety copy",
+      message: "Your browser storage may be full, so this change can't be undone. If you're not sure, cancel and download a backup first.",
+      confirmLabel: "Go ahead anyway", danger: true,
+    }))) return;
+    change();
+    UI.toast(doneMessage, saved ? { actionLabel: "Undo", onAction: undoBigChange, duration: 10000 } : {});
+  }
+
+  function undoBigChange() {
+    if (!Store.undoBigChange()) return UI.toast("There's nothing to undo.", { tone: "error" });
+    applySettings();
+    UI.toast("Change undone. Your data is back as it was.");
+  }
+
   function updateLockButton() {
     document.getElementById("lock-btn").hidden = !Security.hasPin();
   }
@@ -186,7 +220,10 @@ const App = (() => {
     if (current === "settings") render();
   }
 
-  return { start, render, applyTheme, setPrivacy, isInstalled, canInstall, install };
+  return {
+    start, render, applyTheme, setPrivacy, applySettings, isInstalled, canInstall, install,
+    downloadBackup, safely, undoBigChange,
+  };
 })();
 
 document.addEventListener("DOMContentLoaded", App.start);

@@ -10,6 +10,7 @@
 const Store = (() => {
   const STORAGE_KEY = "finance-tracker-v2";
   const LEGACY_KEY = "expense-tracker-transactions"; // data from the first, simpler version
+  const SAFETY_KEY = "finance-tracker-v2-safety";    // copy kept before a big change, for Undo
   const VERSION = 2;
 
   const DEFAULT_CATEGORIES = [
@@ -48,6 +49,8 @@ const Store = (() => {
         pinSalt: null,
         autoLockMinutes: 5,
         lastAccountId: null,
+        lastBackupAt: null,                // "YYYY-MM-DD" of the last downloaded backup
+        backupReminderSnoozedUntil: null,  // "YYYY-MM-DD": hide the backup reminder until then
       },
       accounts: [
         { id: Utils.uid(), name: "Cash", type: "cash", openingBalance: 0 },
@@ -152,6 +155,8 @@ const Store = (() => {
       pinSalt: typeof s.pinSalt === "string" ? s.pinSalt : null,
       autoLockMinutes: [0, 1, 5, 15, 30].includes(s.autoLockMinutes) ? s.autoLockMinutes : 5,
       lastAccountId: typeof s.lastAccountId === "string" ? s.lastAccountId : null,
+      lastBackupAt: Utils.isDateStr(s.lastBackupAt) ? s.lastBackupAt : null,
+      backupReminderSnoozedUntil: Utils.isDateStr(s.backupReminderSnoozedUntil) ? s.backupReminderSnoozedUntil : null,
     };
 
     if (Array.isArray(input.accounts) && input.accounts.length) {
@@ -384,24 +389,88 @@ const Store = (() => {
     return JSON.stringify({ app: "finance-tracker", exportedAt: new Date().toISOString(), ...state }, null, 2);
   }
 
-  function importData(json) {
+  // Reads a backup file's text. Throws if it isn't a Finance Tracker backup.
+  function parseBackup(json) {
     const parsed = JSON.parse(json);
     if (!parsed || typeof parsed !== "object" || !Array.isArray(parsed.transactions)) {
       throw new Error("This file doesn't look like a Finance Tracker backup.");
     }
+    return parsed;
+  }
+
+  function importData(json) {
+    replaceState(parseBackup(json), true); // keep the PIN of this device
+  }
+
+  // Swaps in a whole new set of data (from a backup or a safety copy).
+  function replaceState(data, keepPin) {
     const keep = { pinHash: state.settings.pinHash, pinSalt: state.settings.pinSalt };
-    state = sanitize(parsed);
-    Object.assign(state.settings, keep); // keep the PIN of this device
+    state = sanitize(data);
+    if (keepPin) Object.assign(state.settings, keep);
     processRecurring(false);
     commit();
   }
 
-  function resetAll() {
+  // Erases everything, including the safety copy, so erased data is really
+  // gone. (That matters for "Forgot PIN": otherwise someone could erase and
+  // then undo to get past the PIN.)
+  // With { allowUndo: true } it returns a function that brings the data back.
+  // That copy lives only in memory: once the page is closed, the erase is final.
+  function resetAll({ allowUndo = false } = {}) {
+    const before = allowUndo ? JSON.parse(JSON.stringify(state)) : null;
     state = defaultState();
+    clearSafetyCopy();
     try {
       localStorage.removeItem(LEGACY_KEY);
     } catch { /* ignore */ }
     commit();
+    return before ? () => replaceState(before, false) : null;
+  }
+
+  // ---------- Safety copy: Undo for big changes ----------
+  // Before a big change (restoring a backup, loading demo data, deleting a
+  // category or goal) a copy of all data is saved in a second storage slot.
+  // Only the most recent copy is kept.
+
+  // Returns true if the copy was saved.
+  function saveSafetyCopy(label) {
+    try {
+      localStorage.setItem(SAFETY_KEY, JSON.stringify({ label: String(label).slice(0, 60), takenAt: Date.now(), data: state }));
+      return true;
+    } catch {
+      return false; // storage full or blocked
+    }
+  }
+
+  function readSafetyCopy() {
+    try {
+      const copy = JSON.parse(localStorage.getItem(SAFETY_KEY) || "null");
+      if (copy && typeof copy.label === "string" && Number.isFinite(copy.takenAt) &&
+          copy.data && typeof copy.data === "object" && Array.isArray(copy.data.transactions)) return copy;
+    } catch { /* damaged copy: treat as none */ }
+    return null;
+  }
+
+  // { label, takenAt } of the saved copy, or null if there isn't one.
+  function safetyCopyInfo() {
+    const copy = readSafetyCopy();
+    return copy ? { label: copy.label, takenAt: copy.takenAt } : null;
+  }
+
+  function clearSafetyCopy() {
+    try {
+      localStorage.removeItem(SAFETY_KEY);
+    } catch { /* ignore */ }
+  }
+
+  // Puts the data back as it was before the last big change (keeping this
+  // device's current PIN). Returns false if there was nothing to undo.
+  function undoBigChange() {
+    const copy = readSafetyCopy();
+    if (!copy) return false;
+    clearSafetyCopy();
+    replaceState(copy.data, true);
+    return true;
   }
 
   // Fills the app with three months of realistic example data to explore.
@@ -490,7 +559,8 @@ const Store = (() => {
     addRecurring, deleteRecurring, processRecurring,
     saveAccount, deleteAccount, saveCategory, deleteCategory,
     setBudget, saveGoal, deleteGoal, addContribution, updateSettings,
-    exportData, importData, resetAll, loadDemoData,
+    exportData, parseBackup, importData, resetAll, loadDemoData,
+    saveSafetyCopy, safetyCopyInfo, undoBigChange,
   };
 })();
 

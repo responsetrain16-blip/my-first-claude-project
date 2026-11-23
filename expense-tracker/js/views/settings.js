@@ -88,8 +88,7 @@ Views.settings = (() => {
           ? `Its ${count} transaction${count === 1 ? "" : "s"} will move to "Other", and any budget for it will be removed.`
           : "This category isn't used by any transactions.";
         if (await UI.confirm({ title: `Delete "${category.name}"?`, message, confirmLabel: "Delete", danger: true })) {
-          Store.deleteCategory(category.id);
-          UI.toast("Category deleted");
+          await App.safely(`Delete category “${category.name}”`, () => Store.deleteCategory(category.id), "Category deleted");
         }
       });
     }
@@ -115,11 +114,6 @@ Views.settings = (() => {
   }
 
   // ---------- Data: backup & restore ----------
-  function backup() {
-    Utils.download(`finance-backup-${Utils.todayStr()}.json`, Store.exportData(), "application/json");
-    UI.toast("Backup downloaded. Keep it somewhere safe.");
-  }
-
   function restore() {
     const input = h("input", { type: "file", accept: ".json,application/json" });
     input.addEventListener("change", async () => {
@@ -132,14 +126,18 @@ Views.settings = (() => {
         confirmLabel: "Replace my data", danger: true,
       });
       if (!ok) return;
+      // Check the file first, so a bad file doesn't replace the safety copy
+      let text;
       try {
-        Store.importData(await file.text());
-        Utils.setCurrency(Store.state.settings.currency);
-        App.applyTheme();
-        UI.toast("Backup restored");
+        text = await file.text();
+        Store.parseBackup(text);
       } catch (err) {
-        UI.toast(err instanceof SyntaxError ? "That file isn't a valid backup." : err.message, { tone: "error" });
+        return UI.toast(err instanceof SyntaxError ? "That file isn't a valid backup." : err.message, { tone: "error" });
       }
+      await App.safely("Restore backup", () => {
+        Store.importData(text);
+        App.applySettings();
+      }, "Backup restored");
     });
     input.click();
   }
@@ -250,26 +248,39 @@ Views.settings = (() => {
         : h("p", { class: "muted", text: "None yet. When adding a transaction, open \"Notes, tags & repeat\" to make it repeat." })));
 
     // Data
+    const lastBackup = s.lastBackupAt ? `Last backup: ${Utils.formatDate(s.lastBackupAt)}.` : "You haven't downloaded a backup yet.";
+    const safetyCopy = Store.safetyCopyInfo();
+    const takenAt = safetyCopy && new Date(safetyCopy.takenAt).toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
     root.append(UI.card("Your data", {},
-      row("Back up", "Download all your data as a file. Do this regularly!",
-        h("button", { class: "btn btn-secondary btn-small", type: "button", onClick: backup }, icon("download", 16), "Download backup")),
+      row("Back up", `Download all your data as a file. Do this regularly! ${lastBackup}`,
+        h("button", { class: "btn btn-secondary btn-small", type: "button", onClick: App.downloadBackup }, icon("download", 16), "Download backup")),
       row("Restore", "Load data from a backup file.",
         h("button", { class: "btn btn-ghost btn-small", type: "button", onClick: restore }, icon("upload", 16), "Restore")),
+      safetyCopy ? row("Undo last big change", `${safetyCopy.label} (${takenAt}). A copy of your data from just before it was kept.`,
+        h("button", { class: "btn btn-ghost btn-small", type: "button", text: "Undo", onClick: async () => {
+          if (await UI.confirm({
+            title: "Undo last big change?",
+            message: `Your data goes back to how it was just before this change: ${safetyCopy.label} (${takenAt}). Anything you added or changed since then will be lost.`,
+            confirmLabel: "Undo it", danger: true,
+          })) App.undoBigChange();
+        } })) : null,
       row("Demo data", "Replace everything with example data to try the app.",
         h("button", { class: "btn btn-ghost btn-small", type: "button", text: "Load demo", onClick: async () => {
-          if (await UI.confirm({ title: "Load demo data?", message: "This replaces all your current data with example data.", confirmLabel: "Load demo data", danger: state.transactions.length > 0 })) {
-            Store.loadDemoData();
-            UI.toast("Demo data loaded");
+          if (await UI.confirm({ title: "Load demo data?", message: "This replaces all your current data with example data. You can undo it afterwards.", confirmLabel: "Load demo data", danger: state.transactions.length > 0 })) {
+            await App.safely("Load demo data", () => Store.loadDemoData(), "Demo data loaded");
           }
         } })),
       row("Erase everything", "Delete all transactions, budgets, goals and settings on this device.",
         h("button", { class: "btn btn-danger btn-small", type: "button", text: "Erase all", onClick: async () => {
-          if (await UI.confirm({ title: "Erase all data?", message: "Everything will be permanently deleted from this device. Download a backup first if you might want it back.", confirmLabel: "Erase everything", danger: true })) {
-            Store.resetAll();
-            Utils.setCurrency("USD");
-            App.applyTheme();
-            App.setPrivacy(false);
-            UI.toast("All data erased");
+          if (await UI.confirm({ title: "Erase all data?", message: "Everything will be deleted from this device. You'll have 10 seconds to undo; after that it's permanent. Download a backup first if you might want it back.", confirmLabel: "Erase everything", danger: true })) {
+            // The undo copy is kept only in memory, never saved (see Store.resetAll)
+            const undo = Store.resetAll({ allowUndo: true });
+            App.applySettings();
+            UI.toast("All data erased", { actionLabel: "Undo", duration: 10000, onAction: () => {
+              undo();
+              App.applySettings();
+              UI.toast("Your data is back.");
+            } });
           }
         } }))));
 

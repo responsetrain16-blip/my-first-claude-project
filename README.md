@@ -30,6 +30,7 @@ A website for keeping track of your money. With it you can:
 - See charts and reports of where your money goes
 - Lock the website with a PIN and hide amounts on screen for privacy
 - Install it on your phone or computer like an app, and use it without internet
+- Undo big changes (restoring a backup, loading demo data, deleting a category or goal, erasing everything), and get a reminder when it's time to download a backup
 
 Your data is stored only in your own browser. Nothing is sent to a server.
 
@@ -109,6 +110,7 @@ To install it anywhere else:
 
 A short summary of each change, newest first. Claude Code adds a line here automatically after making changes (see "Hooks" below).
 
+- **2026-11-24:** The Finance Tracker now keeps a safety copy before big changes so they can be undone, reminds you to download a backup every 30 days, and no longer shows erased data on screen after "Forgot PIN".
 - **2026-11-24:** Added two Claude Code hooks: one checks the website's JavaScript for typing mistakes after every edit, the other keeps this "Recent changes" list up to date.
 - **2026-11-23:** Added the Smart Expense Analyst plugin, which turns a backup of your Finance Tracker data into a spending report with savings ideas.
 - **2026-11-23:** Added the explain simply plugin, so Claude explains technical topics in plain English.

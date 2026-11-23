@@ -76,7 +76,9 @@ Installing needs the online (https) address too. Your data stays the same: the i
 
 Your data is saved **only in the browser you use**. It won't appear in another browser or on another device, and it's lost if you clear your browser data.
 
-To keep it safe, go to **Settings → Your data → Download backup** from time to time. You can restore that file later, on any device.
+To keep it safe, go to **Settings → Your data → Download backup** from time to time. You can restore that file later, on any device. If you haven't backed up for 30 days, Home shows a reminder ("Remind me later" hides it for a week).
+
+**Undo for big changes.** Before restoring a backup, loading demo data, or deleting a category or goal, the app quietly keeps a copy of your data. The message afterwards has an **Undo** button, and **Settings → Your data → Undo last big change** works later too (only the latest change is kept). **Erase everything** can be undone for 10 seconds only; after that it's permanent. This copy is kept in the same browser, so it protects you from mistakes, not from clearing your browser data: only a downloaded backup does that.
 
 ## How the code is organised
 
