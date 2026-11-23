@@ -5,5 +5,32 @@
     "pr-check@my-first-claude-project": true,
     "explain-simply@my-first-claude-project": true,
     "smart-expense-analyst@my-first-claude-project": true
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/check-js-syntax.js\"",
+            "timeout": 30,
+            "statusMessage": "Checking JavaScript syntax..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/remind-readme-update.js\"",
+            "timeout": 30,
+            "statusMessage": "Checking README is up to date..."
+          }
+        ]
+      }
+    ]
   }
 }

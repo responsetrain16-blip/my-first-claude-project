@@ -14,6 +14,8 @@ Deployed with GitHub Pages from `main` (repo root): https://responsetrain16-blip
   `python3 -m http.server 8799 --bind 127.0.0.1 --directory expense-tracker`
   The PIN lock needs a secure context (https or localhost), so serve it rather than using `file://` when testing security features.
 - **Syntax check (the only "lint"):** `for f in expense-tracker/js/*.js expense-tracker/js/views/*.js; do node --check "$f"; done`
+  A project hook (`.claude/settings.json` → `.claude/hooks/check-js-syntax.js`) also runs `node --check` automatically after every Edit/Write of a file under `expense-tracker/js/`, and reports any syntax error back so it can be fixed immediately.
+- **README "Recent changes":** a Stop hook (`.claude/hooks/remind-readme-update.js`) checks `git status` when you finish; if files changed since the last commit but `README.md` didn't, it asks you to add one plain-English line (`- **YYYY-MM-DD:** …`) at the top of README's "## Recent changes" section and fix any README section the change made out of date. It asks once per set of changes and stays quiet once README.md is modified.
 - **Tests:** there is no test runner. The `expense-tracker-tester` plugin (`plugins/expense-tracker-tester/`, enabled for this project in `.claude/settings.json`; also runnable as `/test-tracker`) holds the QA checklist and a Puppeteer script that drives Chrome in a fresh profile and checks adding/editing/deleting, validation, exact calculations, monthly summaries and UI at phone/desktop widths in light/dark mode:
   ```
   # once, in a temp dir (never in the repo): npm install puppeteer-core@23.11.1
