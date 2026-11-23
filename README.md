@@ -105,6 +105,26 @@ To install it anywhere else:
 /plugin install smart-expense-analyst --marketplace responsetrain16-blip/my-first-claude-project
 ```
 
+## Recent changes
+
+A short summary of each change, newest first. Claude Code adds a line here automatically after making changes (see "Hooks" below).
+
+- **2026-11-24:** Added two Claude Code hooks: one checks the website's JavaScript for typing mistakes after every edit, the other keeps this "Recent changes" list up to date.
+- **2026-11-23:** Added the Smart Expense Analyst plugin, which turns a backup of your Finance Tracker data into a spending report with savings ideas.
+- **2026-11-23:** Added the explain simply plugin, so Claude explains technical topics in plain English.
+- **2026-11-17:** The Finance Tracker now rejects dates more than a year in the future (catches typos like 2062), and error messages scroll fully into view on small screens.
+
+### 🪝 Hooks
+
+Hooks are automatic "whenever X happens, do Y" rules for Claude Code, set in `.claude/settings.json`:
+
+| Hook | When it runs | What it does |
+|------|--------------|--------------|
+| **JavaScript check** | After Claude edits a file in `expense-tracker/js/` | Checks the file for typing mistakes and tells Claude to fix any it finds |
+| **README reminder** | When Claude finishes a task | If files changed but this README didn't, asks Claude to add a one-line summary to "Recent changes" |
+
+Type `/hooks` in Claude Code to see, change or switch them off.
+
 ## Project files
 
 | File or folder | What it is |
@@ -117,6 +137,8 @@ To install it anywhere else:
 | `docs/adr/` | Decision records (ADRs): notes explaining big decisions about how the project is built |
 | `docs/screenshots/` | Pictures of the website used in this README |
 | `CLAUDE.md` | Notes that help Claude Code work on this project |
+| `.claude/settings.json` | Project settings for Claude Code: which plugins are on, and the hooks |
+| `.claude/hooks/` | The two hook scripts (JavaScript check and README reminder) |
 | `plugins/expense-tracker-tester/` | The tester plugin (its skill, `/test-tracker` command and test script) |
 | `plugins/pr-check/` | The PR check plugin (its skill and automatic checks script) |
 | `plugins/explain-simply/` | The explain simply plugin (one skill that explains technical topics in plain English) |
