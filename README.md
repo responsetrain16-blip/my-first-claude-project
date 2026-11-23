@@ -93,6 +93,18 @@ To install it anywhere else:
 /plugin install explain-simply --marketplace responsetrain16-blip/my-first-claude-project
 ```
 
+### 📊 Smart Expense Analyst plugin for Claude Code
+
+A plugin that reads my Finance Tracker data and writes a spending report: totals, spending by category, this month compared with last month, unusual or possibly duplicated transactions, and three practical ways to save. It only uses the real data, never invents numbers and never changes anything.
+
+Because the data lives only in my browser, I first give it a file: either **Settings → Download backup** (best) or **Transactions → Export CSV**. Then I ask "analyse my spending" and tell it where the file is. The file stays on my computer.
+
+To install it anywhere else:
+
+```
+/plugin install smart-expense-analyst --marketplace responsetrain16-blip/my-first-claude-project
+```
+
 ## Project files
 
 | File or folder | What it is |
@@ -108,6 +120,7 @@ To install it anywhere else:
 | `plugins/expense-tracker-tester/` | The tester plugin (its skill, `/test-tracker` command and test script) |
 | `plugins/pr-check/` | The PR check plugin (its skill and automatic checks script) |
 | `plugins/explain-simply/` | The explain simply plugin (one skill that explains technical topics in plain English) |
+| `plugins/smart-expense-analyst/` | The Smart Expense Analyst plugin (one skill that analyses a backup or CSV export and suggests savings) |
 | `.claude-plugin/marketplace.json` | Lists the plugins so Claude Code can install them from this repository |
 | `LICENSE.md` | The MIT License |
 

@@ -28,6 +28,13 @@
       "description": "Explains any technical topic in plain English for a non-technical person, with an everyday comparison and no jargon.",
       "version": "1.0.0",
       "category": "learning"
+    },
+    {
+      "name": "smart-expense-analyst",
+      "source": "./plugins/smart-expense-analyst",
+      "description": "Analyses Finance Tracker data from a backup or CSV export and reports spending patterns, monthly changes, unusual transactions and savings ideas.",
+      "version": "1.0.0",
+      "category": "productivity"
     }
   ]
 }
