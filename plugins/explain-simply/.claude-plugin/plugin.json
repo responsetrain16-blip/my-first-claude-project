@@ -1,0 +1,13 @@
+{
+  "name": "explain-simply",
+  "version": "1.0.0",
+  "description": "Explains any technical topic in plain English for a non-technical person: a one-sentence answer, an everyday comparison, no jargon, and one thing to remember.",
+  "author": {
+    "name": "responsetrain16-blip",
+    "url": "https://github.com/responsetrain16-blip"
+  },
+  "homepage": "https://github.com/responsetrain16-blip/my-first-claude-project",
+  "repository": "https://github.com/responsetrain16-blip/my-first-claude-project",
+  "license": "MIT",
+  "keywords": ["explain", "beginner", "plain-english", "learning"]
+}

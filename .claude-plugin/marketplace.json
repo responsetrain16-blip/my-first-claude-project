@@ -21,6 +21,13 @@
       "description": "Checks a pull request or local changes before merging and reports whether it's ready, without changing any code.",
       "version": "1.0.0",
       "category": "development"
+    },
+    {
+      "name": "explain-simply",
+      "source": "./plugins/explain-simply",
+      "description": "Explains any technical topic in plain English for a non-technical person, with an everyday comparison and no jargon.",
+      "version": "1.0.0",
+      "category": "learning"
     }
   ]
 }

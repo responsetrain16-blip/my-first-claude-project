@@ -81,6 +81,18 @@ To install it anywhere else:
 /plugin install pr-check --marketplace responsetrain16-blip/my-first-claude-project
 ```
 
+### 💬 Explain simply plugin for Claude Code
+
+A plugin that makes Claude explain technical topics in plain English for a non-technical person. Every answer starts with a one-sentence explanation, uses an everyday comparison, avoids jargon (or explains it in brackets) and ends with "The one thing to remember".
+
+To use it, just ask "what is…" or "explain…", or type `/explain-simply` followed by a topic.
+
+To install it anywhere else:
+
+```
+/plugin install explain-simply --marketplace responsetrain16-blip/my-first-claude-project
+```
+
 ## Project files
 
 | File or folder | What it is |
@@ -95,6 +107,7 @@ To install it anywhere else:
 | `CLAUDE.md` | Notes that help Claude Code work on this project |
 | `plugins/expense-tracker-tester/` | The tester plugin (its skill, `/test-tracker` command and test script) |
 | `plugins/pr-check/` | The PR check plugin (its skill and automatic checks script) |
+| `plugins/explain-simply/` | The explain simply plugin (one skill that explains technical topics in plain English) |
 | `.claude-plugin/marketplace.json` | Lists the plugins so Claude Code can install them from this repository |
 | `LICENSE.md` | The MIT License |
 
