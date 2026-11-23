@@ -110,6 +110,7 @@ To install it anywhere else:
 
 A short summary of each change, newest first. Claude Code adds a line here automatically after making changes (see "Hooks" below).
 
+- **2026-11-24:** Added seven new decision records (ADRs 0002 to 0008) explaining why the project uses no framework, hand-drawn charts, a scrambled PIN, GitHub Pages, offline install, colour-blind-safe colours and the new Undo/backup reminder, plus an ADR index page.
 - **2026-11-24:** The Finance Tracker now keeps a safety copy before big changes so they can be undone, reminds you to download a backup every 30 days, and no longer shows erased data on screen after "Forgot PIN".
 - **2026-11-24:** Added two Claude Code hooks: one checks the website's JavaScript for typing mistakes after every edit, the other keeps this "Recent changes" list up to date.
 - **2026-11-23:** Added the Smart Expense Analyst plugin, which turns a backup of your Finance Tracker data into a spending report with savings ideas.
@@ -136,7 +137,7 @@ Type `/hooks` in Claude Code to see, change or switch them off.
 | `ARCHITECTURE.md` | How the Finance Tracker is built, explained for beginners |
 | `TESTING.md` | How to test the Finance Tracker |
 | `CONTRIBUTING.md` | How others can report bugs and suggest changes |
-| `docs/adr/` | Decision records (ADRs): notes explaining big decisions about how the project is built |
+| `docs/adr/` | Decision records (ADRs): 8 notes explaining big decisions about how the project is built (start with its `README.md` index) |
 | `docs/screenshots/` | Pictures of the website used in this README |
 | `CLAUDE.md` | Notes that help Claude Code work on this project |
 | `.claude/settings.json` | Project settings for Claude Code: which plugins are on, and the hooks |
