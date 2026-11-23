@@ -47,6 +47,7 @@ Globals: `Utils`, `Store`, `Finance`, `Charts`, `UI`, `Views`, `Security`, `App`
 - `migrateLegacy()` imports data from the first version of the app (`expense-tracker-transactions` key); keep it working.
 - **Undo for big changes:** wrap any action that replaces or removes lots of data in `App.safely(label, change, doneMessage)`, which saves a safety copy (`finance-tracker-v2-safety`, latest only) and offers Undo. `Store.resetAll()` always deletes the safety copy (so "Forgot PIN" can't be undone); only Settings' erase passes `{ allowUndo: true }` for an in-memory, 10-second Undo.
 - `settings.lastBackupAt` / `backupReminderSnoozedUntil` drive the Home backup reminder; `App.downloadBackup()` updates them.
+- **Budget alert:** the transaction form (`UI.openTransactionForm`) compares `Finance.budgetStatus` for the expense's category and month before and after saving, and appends "⚠ Close to limit / Over budget / Still over budget" to the confirmation toast (only when spending went up; percentage only when privacy mode is on). Repeating transactions added automatically don't alert.
 
 **Security conventions**
 - Build DOM only with `Utils.h()` / `Utils.svg()` (sets text via `textContent`); never use `innerHTML` with user data.
