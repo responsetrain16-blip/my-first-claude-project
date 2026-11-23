@@ -356,6 +356,29 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .welcome { padding: 8px; }
 
+/* Backup reminder on Home (neutral colours: status colours are for budgets/goals) */
+.backup-reminder {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  border-color: var(--accent-soft);
+}
+.backup-reminder-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+.backup-reminder-text { flex: 1 1 240px; min-width: 0; }
+.backup-reminder-title { font-weight: 650; margin: 0 0 2px; }
+.backup-reminder-text .muted { margin: 0; }
+.backup-reminder-actions { flex-shrink: 0; }
+
 .mini-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
 .budget-mini { display: flex; flex-direction: column; gap: 7px; }
 .account-row strong { font-weight: 600; }

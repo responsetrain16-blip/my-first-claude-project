@@ -24,12 +24,32 @@ Views.dashboard = {
             h("button", { class: "btn btn-primary", type: "button", onClick: () => UI.openTransactionForm() }, icon("plus", 18), "Add your first transaction"),
             h("button", { class: "btn btn-ghost", type: "button", text: "Explore with demo data", onClick: async () => {
               if (await UI.confirm({ title: "Load demo data?", message: "This fills the app with three months of example transactions, budgets and goals. You can erase it later in Settings.", confirmLabel: "Load demo data" })) {
-                Store.loadDemoData();
-                UI.toast("Demo data loaded — have a look around!");
+                await App.safely("Load demo data", () => Store.loadDemoData(), "Demo data loaded — have a look around!");
               }
             } }),
           ],
         })));
+    }
+
+    // ----- Backup reminder: the data lives only in this browser -----
+    const today = Utils.todayStr();
+    const { lastBackupAt, backupReminderSnoozedUntil } = state.settings;
+    const daysSinceBackup = lastBackupAt ? Utils.daysBetween(lastBackupAt, today) : null;
+    const backupDue = state.transactions.length > 0
+      && (daysSinceBackup === null || daysSinceBackup >= 30)
+      && !(backupReminderSnoozedUntil && backupReminderSnoozedUntil > today);
+    if (backupDue) {
+      root.append(h("section", { class: "card backup-reminder", "aria-label": "Backup reminder" },
+        h("span", { class: "backup-reminder-icon", "aria-hidden": "true" }, icon("download", 22)),
+        h("div", { class: "backup-reminder-text" },
+          h("p", { class: "backup-reminder-title", text: daysSinceBackup === null ? "You haven't backed up your data yet" : `Last backup: ${daysSinceBackup} days ago` }),
+          h("p", { class: "muted small", text: "Your data is only stored in this browser. A backup file keeps it safe if the browser is cleared or you change device." })),
+        h("div", { class: "button-row backup-reminder-actions" },
+          h("button", { class: "btn btn-primary btn-small", type: "button", onClick: App.downloadBackup }, icon("download", 16), "Download backup"),
+          h("button", { class: "btn btn-ghost btn-small", type: "button", text: "Remind me later", onClick: () => {
+            Store.updateSettings({ backupReminderSnoozedUntil: Utils.addDays(today, 7) });
+            UI.toast("OK, I'll remind you again in a week.");
+          } }))));
     }
 
     // ----- Headline: total balance -----

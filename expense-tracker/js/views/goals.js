@@ -89,9 +89,8 @@ Views.goals = (() => {
       h("button", { class: "btn btn-ghost", type: "button", onClick: () => { close(); openGoalForm(goal); } }, icon("edit", 16), "Edit"),
       h("button", { class: "btn btn-ghost danger-text", type: "button", onClick: async () => {
         close();
-        if (await UI.confirm({ title: "Delete goal?", message: `"${goal.name}" and its history will be removed. This can't be undone.`, confirmLabel: "Delete", danger: true })) {
-          Store.deleteGoal(goal.id);
-          UI.toast("Goal deleted");
+        if (await UI.confirm({ title: "Delete goal?", message: `"${goal.name}" and its history will be removed. You can undo this straight afterwards.`, confirmLabel: "Delete", danger: true })) {
+          await App.safely(`Delete goal “${goal.name}”`, () => Store.deleteGoal(goal.id), "Goal deleted");
         }
       } }, icon("trash", 16), "Delete"));
 
