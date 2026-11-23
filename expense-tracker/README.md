@@ -21,6 +21,7 @@ It works on computers, tablets and phones. On a phone, you can add it to your ho
 ### Budgets
 - Set a monthly limit per category. The website can suggest one based on your last 3 months.
 - Progress bars and clear labels show "On track", "Close to limit" or "Over budget".
+- **Budget alert:** the moment you save an expense that takes a budget to 80% ("Close to limit") or past 100% ("Over budget"), the confirmation message tells you, for example "⚠ Over budget: Groceries this month is now at $110.00 of $100.00 (110%)". Adding more to a budget that's already over says "Still over budget". With "Hide amounts" on, it shows only the percentage.
 - Shows how much you can spend per day for the rest of the month.
 - Lists spending in categories that don't have a budget yet.
 

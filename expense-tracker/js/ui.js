@@ -151,6 +151,36 @@ const UI = (() => {
         h("span", { class: `tx-amount ${t.type}` }, money(sign * t.amount, { sign: sign > 0 }))));
   }
 
+  // ---------- Budget alert ----------
+  // How a category's budget stands in the month of `date`, or null if it has no budget.
+  function budgetFor(categoryId, date) {
+    return Finance.budgetStatus(Utils.monthKey(date)).find((b) => b.budget.categoryId === categoryId) || null;
+  }
+
+  // A short warning when saving an expense pushed its budget to "Close to limit" (80%)
+  // or over it, or added more to a budget that was already over. Empty text otherwise.
+  function budgetAlert(before, after, date) {
+    // Only when spending in that budget actually went up (not for edits that lower it)
+    if (!after || !before || after.spent <= before.spent + 0.004) return "";
+    const key = Utils.monthKey(date);
+    const when = key === Utils.currentMonthKey() ? "this month" : `in ${Utils.monthLabel(key)}`;
+    const percent = `${Math.round(after.ratio * 100)}%`;
+    // With "Hide amounts" on, show only the percentage so no amounts appear on screen
+    const detail = Store.state.settings.privacy
+      ? `${percent} used`
+      : `${Utils.formatMoney(after.spent)} of ${Utils.formatMoney(after.budget.amount)} (${percent})`;
+    const name = after.category.name;
+    if (after.status === "over") {
+      return before.status === "over"
+        ? `⚠ Still over budget: ${name} ${when} is at ${detail}.`
+        : `⚠ Over budget: ${name} ${when} is now at ${detail}.`;
+    }
+    if (after.status === "warning" && before.status === "ok") {
+      return `⚠ Close to limit: ${name} ${when} is at ${detail}.`;
+    }
+    return "";
+  }
+
   // ---------- Add / edit a transaction ----------
   function openTransactionForm(existing = null, preset = {}) {
     const { state } = Store;
@@ -280,14 +310,20 @@ const UI = (() => {
         tags: tagsInput.value.split(",").map((t) => t.trim().replace(/^#/, "")).filter(Boolean).slice(0, 10),
       };
 
+      // Remember how this category's budget stood before saving, to spot a limit being crossed
+      const budgetBefore = data.type === "expense" ? budgetFor(data.categoryId, data.date) : null;
+
+      let message;
       if (isEdit) {
         Store.updateTransaction(existing.id, data);
-        toast("Transaction updated");
+        message = "Transaction updated.";
       } else {
         const tx = Store.addTransaction(data);
         if (repeatSelect.value) Store.addRecurring(tx, repeatSelect.value);
-        toast(repeatSelect.value ? "Repeating transaction added" : "Transaction added");
+        message = repeatSelect.value ? "Repeating transaction added." : "Transaction added.";
       }
+      const alert = data.type === "expense" ? budgetAlert(budgetBefore, budgetFor(data.categoryId, data.date), data.date) : "";
+      toast(alert ? `${message} ${alert}` : message, alert ? { duration: 9000 } : {});
       close();
     });
 
