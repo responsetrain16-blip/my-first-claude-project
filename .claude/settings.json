@@ -2,6 +2,7 @@
   "enabledPlugins": {
     "expense-tracker-tester@my-first-claude-project": true,
     "frontend-design@anthropic-plugin-directory": true,
-    "pr-check@my-first-claude-project": true
+    "pr-check@my-first-claude-project": true,
+    "explain-simply@my-first-claude-project": true
   }
 }
