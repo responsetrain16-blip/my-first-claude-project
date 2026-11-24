@@ -13,6 +13,7 @@ It works on computers, tablets and phones. On a phone, you can add it to your ho
 - **Smart suggestions.** Descriptions you've used before are suggested, and picking one fills in its category.
 - **Repeating transactions.** Rent, salary or subscriptions can repeat weekly, monthly or yearly. They're added automatically when they're due.
 - **Edit, duplicate or delete.** Deleting can be undone straight away.
+- **Duplicate warning.** If you save something that looks like an entry you already have (same type, amount and date, and the same description, or the same category when there's no description), the app asks "Possible duplicate" first. **Cancel** keeps the form open; **Add anyway** saves it. Editing only the notes or tags of an entry never asks.
 
 ### Accounts
 - Keep separate balances for cash, bank accounts, credit cards and savings.

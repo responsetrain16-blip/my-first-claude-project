@@ -48,6 +48,7 @@ Globals: `Utils`, `Store`, `Finance`, `Charts`, `UI`, `Views`, `Security`, `App`
 - **Undo for big changes:** wrap any action that replaces or removes lots of data in `App.safely(label, change, doneMessage)`, which saves a safety copy (`finance-tracker-v2-safety`, latest only) and offers Undo. `Store.resetAll()` always deletes the safety copy (so "Forgot PIN" can't be undone); only Settings' erase passes `{ allowUndo: true }` for an in-memory, 10-second Undo.
 - `settings.lastBackupAt` / `backupReminderSnoozedUntil` drive the Home backup reminder; `App.downloadBackup()` updates them.
 - **Budget alert:** the transaction form (`UI.openTransactionForm`) compares `Finance.budgetStatus` for the expense's category and month before and after saving, and appends "⚠ Close to limit / Over budget / Still over budget" to the confirmation toast (only when spending went up; percentage only when privacy mode is on). Repeating transactions added automatically don't alert.
+- **Duplicate warning:** before saving, the form looks for another transaction with the same type, amount and date and the same description (case-insensitive; with no description, same category, or same accounts for transfers) and asks "Possible duplicate" via `UI.confirm` (Cancel keeps the form open). Edits only ask if type/amount/date/description changed. Test scripts that add the same entry twice on one day must answer that dialog.
 
 **Security conventions**
 - Build DOM only with `Utils.h()` / `Utils.svg()` (sets text via `textContent`); never use `innerHTML` with user data.
