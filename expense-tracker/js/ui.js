@@ -182,19 +182,11 @@ const UI = (() => {
   }
 
   // ---------- Duplicate warning ----------
-  // Other transactions that look the same: same type, amount and date, and the same
-  // description (ignoring capitals). With no description, the same category (or, for
-  // a transfer, the same two accounts) counts instead.
+  // Other transactions that look the same (the rule is Finance.entryKey, shared with
+  // Settings → Check my data so both always agree).
   function findDuplicates(data, ignoreId) {
-    const description = data.description.toLowerCase();
-    return Store.state.transactions.filter((t) => {
-      if (t.id === ignoreId || t.type !== data.type || t.amount !== data.amount || t.date !== data.date) return false;
-      const other = t.description.trim().toLowerCase();
-      if (description || other) return other === description;
-      return data.type === "transfer"
-        ? t.accountId === data.accountId && t.toAccountId === data.toAccountId
-        : t.categoryId === data.categoryId;
-    });
+    const key = Finance.entryKey(data);
+    return Store.state.transactions.filter((t) => t.id !== ignoreId && Finance.entryKey(t) === key);
   }
 
   // The question shown when a possible duplicate is found.

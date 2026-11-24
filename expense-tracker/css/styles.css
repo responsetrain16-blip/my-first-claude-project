@@ -356,6 +356,16 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .welcome { padding: 8px; }
 
+/* Settings → Check my data (neutral colours: status colours are for budgets/goals) */
+.data-check > p { margin: 0 0 10px; }
+.check-summary { display: flex; align-items: center; gap: 8px; font-weight: 650; }
+.check-finding { border-top: 1px solid var(--border); padding-top: 12px; margin-top: 12px; }
+.check-title { display: flex; align-items: center; gap: 8px; font-size: 0.98rem; font-weight: 650; margin: 0 0 4px; }
+.check-finding > p { margin: 0 0 8px; }
+.check-accounts { list-style: none; margin: 0; padding: 0; }
+.check-accounts li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; }
+.check-footnote { margin-top: 16px !important; }
+
 /* Backup reminder on Home (neutral colours: status colours are for budgets/goals) */
 .backup-reminder {
   display: flex;

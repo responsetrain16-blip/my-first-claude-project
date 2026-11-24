@@ -80,6 +80,8 @@ Your data is saved **only in the browser you use**. It won't appear in another b
 
 To keep it safe, go to **Settings → Your data → Download backup** from time to time. You can restore that file later, on any device. If you haven't backed up for 30 days, Home shows a reminder ("Remind me later" hides it for a week).
 
+**Check my data.** **Settings → Your data → Check now** looks through everything and lists, in plain English, anything worth a second look: possible duplicates, amounts more than 10 times the usual for their category (typos like 5000 instead of 50.00), dates in the future or before 2000, a cash account below zero, and damaged entries the app had to leave out when it opened. Tips (optional) list entries filed under "Other" or with no description. Tap an entry to open and fix it. The check itself never changes anything.
+
 **Undo for big changes.** Before restoring a backup, loading demo data, or deleting a category or goal, the app quietly keeps a copy of your data. The message afterwards has an **Undo** button, and **Settings → Your data → Undo last big change** works later too (only the latest change is kept). **Erase everything** can be undone for 10 seconds only; after that it's permanent. This copy is kept in the same browser, so it protects you from mistakes, not from clearing your browser data: only a downloaded backup does that.
 
 ## How the code is organised

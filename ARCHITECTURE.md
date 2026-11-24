@@ -96,7 +96,7 @@ To add a new page: create a file in `js/views/`, add its `<script>` tag in `inde
 - **Repeating transactions** are stored as rules with a "next date". When the website opens (or you come back to the tab), any that are due are added automatically.
 - **Safety copy (Undo for big changes):** before a big change (restore, demo data, deleting a category or goal), `App.safely()` saves a copy of all data under a second key, `finance-tracker-v2-safety`; `App.undoBigChange()` puts it back (keeping the current PIN). Only the latest copy is kept. Erasing everything (including "Forgot PIN") always deletes this copy, so the PIN can't be bypassed; Settings' "Erase everything" keeps an Undo copy only in memory for 10 seconds.
 - **Backup reminder:** `settings.lastBackupAt` and `settings.backupReminderSnoozedUntil` (dates) decide when Home shows the 30-day backup reminder.
-- **Loading data safely:** anything read from storage or a backup file goes through `Store.sanitize()`, which checks every field and throws away anything broken.
+- **Loading data safely:** anything read from storage or a backup file goes through `Store.sanitize()`, which checks every field and throws away anything broken. How many entries were left out is remembered (`Store.cleanupReport()`), so **Settings → Check my data** can tell you instead of it happening silently.
 - **Older data:** if you used the first, simpler version of the tracker, `migrateLegacy()` brings your old transactions over automatically.
 
 ## Security
