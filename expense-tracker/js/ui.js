@@ -181,6 +181,36 @@ const UI = (() => {
     return "";
   }
 
+  // ---------- Duplicate warning ----------
+  // Other transactions that look the same: same type, amount and date, and the same
+  // description (ignoring capitals). With no description, the same category (or, for
+  // a transfer, the same two accounts) counts instead.
+  function findDuplicates(data, ignoreId) {
+    const description = data.description.toLowerCase();
+    return Store.state.transactions.filter((t) => {
+      if (t.id === ignoreId || t.type !== data.type || t.amount !== data.amount || t.date !== data.date) return false;
+      const other = t.description.trim().toLowerCase();
+      if (description || other) return other === description;
+      return data.type === "transfer"
+        ? t.accountId === data.accountId && t.toAccountId === data.toAccountId
+        : t.categoryId === data.categoryId;
+    });
+  }
+
+  // The question shown when a possible duplicate is found.
+  function duplicateMessage(matches, data) {
+    const nouns = { expense: ["an expense", "expenses"], income: ["an income entry", "income entries"], transfer: ["a transfer", "transfers"] }[data.type];
+    const what = matches.length === 1 ? nouns[0] : `${matches.length} ${nouns[1]}`;
+    const name = data.description
+      ? ` "${data.description}"`
+      : data.type === "transfer" ? "" : ` in "${Store.getCategory(data.categoryId)?.name || "Other"}"`;
+    // With "Hide amounts" on, leave the amount out so it isn't shown on screen
+    const amount = Store.state.settings.privacy ? "" : ` for ${Utils.formatMoney(data.amount)}`;
+    const today = Utils.todayStr();
+    const when = data.date === today ? "today" : data.date === Utils.addDays(today, -1) ? "yesterday" : `on ${Utils.formatDate(data.date)}`;
+    return `You already added ${what}${name}${amount} ${when}. If this is a different one, add it anyway; if it's the same one, cancel.`;
+  }
+
   // ---------- Add / edit a transaction ----------
   function openTransactionForm(existing = null, preset = {}) {
     const { state } = Store;
@@ -286,8 +316,10 @@ const UI = (() => {
       error.scrollIntoView({ block: "nearest" });
     }
 
-    form.addEventListener("submit", (event) => {
+    let checkingDuplicate = false; // ignore extra presses of Save while the duplicate question is open
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      if (checkingDuplicate) return;
       const amount = Utils.parseAmount(amountInput.value);
       if (!(amount > 0)) return showError("Please enter an amount greater than 0.", amountInput);
       if (amount > 1e12) return showError("That amount is too large.", amountInput);
@@ -309,6 +341,21 @@ const UI = (() => {
         notes: notesInput.value.trim(),
         tags: tagsInput.value.split(",").map((t) => t.trim().replace(/^#/, "")).filter(Boolean).slice(0, 10),
       };
+
+      // Possible duplicate? Ask before saving. (When editing, only if the amount, date,
+      // description or type changed, so fixing the notes on an entry doesn't ask every time.)
+      const keyChanged = !isEdit || ["type", "amount", "date", "description"].some((k) => existing[k] !== data[k]);
+      const duplicates = keyChanged ? findDuplicates(data, isEdit ? existing.id : null) : [];
+      if (duplicates.length) {
+        checkingDuplicate = true;
+        const go = await confirm({
+          title: "Possible duplicate",
+          message: duplicateMessage(duplicates, data),
+          confirmLabel: isEdit ? "Save anyway" : "Add anyway",
+        });
+        checkingDuplicate = false;
+        if (!go) return amountInput.focus(); // keep the form open so it can be changed or closed
+      }
 
       // Remember how this category's budget stood before saving, to spot a limit being crossed
       const budgetBefore = data.type === "expense" ? budgetFor(data.categoryId, data.date) : null;

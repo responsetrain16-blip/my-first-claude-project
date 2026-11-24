@@ -24,7 +24,7 @@ If you're also new to coding, I hope this project shows that everyone starts som
 
 A website for keeping track of your money. With it you can:
 
-- Record income, expenses and transfers between accounts
+- Record income, expenses and transfers between accounts, with a warning if you're about to add the same one twice
 - Set monthly budgets and see how close you are to each limit, with an alert as soon as an expense takes you close to or over one
 - Create savings goals and track your progress
 - See charts and reports of where your money goes
@@ -110,6 +110,7 @@ To install it anywhere else:
 
 A short summary of each change, newest first. Claude Code adds a line here automatically after making changes (see "Hooks" below).
 
+- **2026-11-24:** The Finance Tracker now asks "Possible duplicate?" before saving an entry that matches one you already added (same amount, date and description), so accidental double entries don't inflate your totals.
 - **2026-11-24:** The Finance Tracker now alerts you the moment an expense takes a budget to "Close to limit" (80%) or "Over budget" (100%).
 - **2026-11-24:** Added seven new decision records (ADRs 0002 to 0008) explaining why the project uses no framework, hand-drawn charts, a scrambled PIN, GitHub Pages, offline install, colour-blind-safe colours and the new Undo/backup reminder, plus an ADR index page.
 - **2026-11-24:** The Finance Tracker now keeps a safety copy before big changes so they can be undone, reminds you to download a backup every 30 days, and no longer shows erased data on screen after "Forgot PIN".
