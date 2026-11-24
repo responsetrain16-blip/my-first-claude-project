@@ -30,6 +30,7 @@ A website for keeping track of your money. With it you can:
 - See charts and reports of where your money goes
 - Lock the website with a PIN and hide amounts on screen for privacy
 - Install it on your phone or computer like an app, and use it without internet
+- Check your data for possible duplicates, typing mistakes and odd dates with one button
 - Undo big changes (restoring a backup, loading demo data, deleting a category or goal, erasing everything), and get a reminder when it's time to download a backup
 
 Your data is stored only in your own browser. Nothing is sent to a server.
@@ -110,6 +111,7 @@ To install it anywhere else:
 
 A short summary of each change, newest first. Claude Code adds a line here automatically after making changes (see "Hooks" below).
 
+- **2026-11-24:** New **Settings → Check my data** button lists possible duplicates, likely typing mistakes, odd dates, cash below zero and damaged entries in plain English. It never changes anything; tap an entry to fix it.
 - **2026-11-24:** The Finance Tracker now asks "Possible duplicate?" before saving an entry that matches one you already added (same amount, date and description), so accidental double entries don't inflate your totals.
 - **2026-11-24:** The Finance Tracker now alerts you the moment an expense takes a budget to "Close to limit" (80%) or "Over budget" (100%).
 - **2026-11-24:** Added seven new decision records (ADRs 0002 to 0008) explaining why the project uses no framework, hand-drawn charts, a scrambled PIN, GitHub Pages, offline install, colour-blind-safe colours and the new Undo/backup reminder, plus an ADR index page.

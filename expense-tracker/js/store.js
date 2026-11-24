@@ -37,6 +37,8 @@ const Store = (() => {
 
   let state = null;
   const listeners = new Set();
+  // What sanitize() had to leave out the last time data was opened or restored (see cleanupReport)
+  let lastCleanup = null;
 
   function defaultState() {
     return {
@@ -79,6 +81,7 @@ const Store = (() => {
 
     if (saved) {
       state = sanitize(saved);
+      lastCleanup = countRemoved(saved, state, "opened");
     } else {
       state = defaultState();
       migrateLegacy();
@@ -406,6 +409,7 @@ const Store = (() => {
   function replaceState(data, keepPin) {
     const keep = { pinHash: state.settings.pinHash, pinSalt: state.settings.pinSalt };
     state = sanitize(data);
+    lastCleanup = countRemoved(data, state, "restored");
     if (keepPin) Object.assign(state.settings, keep);
     processRecurring(false);
     commit();
@@ -426,6 +430,17 @@ const Store = (() => {
     commit();
     return before ? () => replaceState(before, false) : null;
   }
+
+  // How many entries sanitize() left out because they were damaged or incomplete.
+  // `when` is "opened" (loaded from storage) or "restored" (from a backup or Undo).
+  function countRemoved(raw, clean, when) {
+    const removed = (key) => Math.max(0, (Array.isArray(raw && raw[key]) ? raw[key].length : 0) - clean[key].length);
+    return {
+      when, transactions: removed("transactions"), recurring: removed("recurring"),
+      budgets: removed("budgets"), goals: removed("goals"),
+    };
+  }
+  const cleanupReport = () => lastCleanup;
 
   // ---------- Safety copy: Undo for big changes ----------
   // Before a big change (restoring a backup, loading demo data, deleting a
@@ -560,7 +575,7 @@ const Store = (() => {
     saveAccount, deleteAccount, saveCategory, deleteCategory,
     setBudget, saveGoal, deleteGoal, addContribution, updateSettings,
     exportData, parseBackup, importData, resetAll, loadDemoData,
-    saveSafetyCopy, safetyCopyInfo, undoBigChange,
+    saveSafetyCopy, safetyCopyInfo, undoBigChange, cleanupReport,
   };
 })();
 
@@ -659,5 +674,124 @@ const Finance = (() => {
     return { overdue: false, perMonth: remaining / months, months };
   }
 
-  return { inRange, totals, monthTotals, byCategory, accountBalance, totalBalance, monthly, firstMonthKey, budgetStatus, goalSaved, goalMonthlyNeeded };
+  // ---------- Data check ----------
+  // Two entries with the same key look like the same thing added twice: same type,
+  // amount and date, and the same description (ignoring capitals and spaces). With no
+  // description, the same category (or the same two accounts for a transfer) counts.
+  function entryKey(t) {
+    const description = String(t.description || "").trim().toLowerCase();
+    const what = description ? `d:${description}`
+      : t.type === "transfer" ? `a:${t.accountId}>${t.toAccountId}` : `c:${t.categoryId}`;
+    return [t.type, t.amount, t.date, what].join("|");
+  }
+
+  // Looks through all the data for things worth a second look. It never changes anything.
+  // Returns { counts, problems: [...], tips: [...] }. Each finding has an id, a title,
+  // a plain-English explanation and (when it's about transactions) the transactions involved.
+  function checkData() {
+    const { transactions, accounts, budgets, goals } = Store.state;
+    const today = Utils.todayStr();
+    const byDate = (a, b) => b.date.localeCompare(a.date);
+    const problems = [];
+    const tips = [];
+
+    // 1. Possible duplicates
+    const groups = new Map();
+    for (const t of transactions) {
+      const key = entryKey(t);
+      groups.set(key, [...(groups.get(key) || []), t]);
+    }
+    const duplicateGroups = [...groups.values()].filter((g) => g.length > 1);
+    if (duplicateGroups.length) {
+      problems.push({
+        id: "duplicates", title: "Possible duplicates",
+        text: `${duplicateGroups.length} ${duplicateGroups.length === 1 ? "set" : "sets"} of entries look the same (same amount, date and description). If one was added twice by mistake, open it and delete it. If they're real, you can ignore this.`,
+        items: duplicateGroups.flat().sort(byDate),
+      });
+    }
+
+    // 2. Amounts much bigger than usual for their category (possible typo, e.g. 5000 instead of 50.00)
+    const amountsByCategory = new Map();
+    for (const t of transactions) {
+      if (t.type === "transfer") continue;
+      amountsByCategory.set(t.categoryId, [...(amountsByCategory.get(t.categoryId) || []), t.amount]);
+    }
+    const median = (list) => {
+      const s = [...list].sort((a, b) => a - b), m = Math.floor(s.length / 2);
+      return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+    };
+    const large = transactions.filter((t) => {
+      const list = amountsByCategory.get(t.categoryId);
+      return t.type !== "transfer" && list && list.length >= 5 && t.amount > 10 * median(list);
+    });
+    if (large.length) {
+      problems.push({
+        id: "large", title: "Unusually large amounts",
+        text: "These are more than 10 times the usual amount for their category. Check for a typing mistake, like 5000 instead of 50.00.",
+        items: large.sort(byDate),
+      });
+    }
+
+    // 3. Dates that look wrong
+    const future = transactions.filter((t) => t.date > today);
+    if (future.length) {
+      problems.push({
+        id: "future", title: "Dated in the future",
+        text: "Fine for payments you've planned ahead. Otherwise, check the date. These don't count in this month's totals until their day comes.",
+        items: future.sort(byDate),
+      });
+    }
+    const old = transactions.filter((t) => t.date < "2000-01-01");
+    if (old.length) {
+      problems.push({
+        id: "old", title: "Very old dates",
+        text: "Dated before the year 2000. This is usually a typo in the year.",
+        items: old.sort(byDate),
+      });
+    }
+
+    // 4. Cash below zero: you can't spend cash you don't have, so an entry is probably missing
+    const negativeCash = accounts.filter((a) => a.type === "cash" && accountBalance(a) < -0.004);
+    if (negativeCash.length) {
+      problems.push({
+        id: "cash", title: "Cash below zero",
+        text: `${negativeCash.map((a) => a.name).join(", ")} ${negativeCash.length === 1 ? "is" : "are"} below zero. Real cash can't go negative, so an income, a transfer in, or the starting balance is probably missing.`,
+        accounts: negativeCash.map((a) => ({ account: a, balance: accountBalance(a) })),
+      });
+    }
+
+    // 5. Damaged entries that couldn't be read when the data was opened or restored
+    const cleanup = Store.cleanupReport();
+    const removed = cleanup ? cleanup.transactions + cleanup.recurring + cleanup.budgets + cleanup.goals : 0;
+    if (removed) {
+      const parts = [["transactions", "transaction"], ["recurring", "repeating rule"], ["budgets", "budget"], ["goals", "goal"]]
+        .filter(([k]) => cleanup[k]).map(([k, word]) => `${cleanup[k]} ${word}${cleanup[k] === 1 ? "" : "s"}`);
+      problems.push({
+        id: "damaged", title: "Damaged entries left out",
+        text: `When your data was ${cleanup.when === "opened" ? "opened" : "restored"}, ${parts.join(", ")} couldn't be read (missing or invalid amount, date or type) and ${removed === 1 ? "was" : "were"} left out so the app keeps working. If you have a recent backup, check that nothing important is missing.`,
+      });
+    }
+
+    // Tips: not mistakes, just ways to make the reports more useful
+    const inOther = transactions.filter((t) => t.type !== "transfer" && Store.getCategory(t.categoryId)?.system);
+    if (inOther.length) {
+      tips.push({
+        id: "other", title: "Filed under \"Other\"",
+        text: "Choosing a category makes the reports and budgets more useful.",
+        items: inOther.sort(byDate),
+      });
+    }
+    const noDescription = transactions.filter((t) => !t.description.trim());
+    if (noDescription.length) {
+      tips.push({
+        id: "nodesc", title: "No description",
+        text: "A short description makes entries easier to find and helps spot duplicates.",
+        items: noDescription.sort(byDate),
+      });
+    }
+
+    return { counts: { transactions: transactions.length, accounts: accounts.length, budgets: budgets.length, goals: goals.length }, problems, tips };
+  }
+
+  return { inRange, totals, monthTotals, byCategory, accountBalance, totalBalance, monthly, firstMonthKey, budgetStatus, goalSaved, goalMonthlyNeeded, entryKey, checkData };
 })();

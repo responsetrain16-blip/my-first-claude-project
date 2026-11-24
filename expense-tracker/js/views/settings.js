@@ -113,6 +113,46 @@ Views.settings = (() => {
     });
   }
 
+  // ---------- Data: check for problems ----------
+  // Shows what Finance.checkData() found. It only reads the data; nothing is changed
+  // unless you open an entry and edit it yourself.
+  function openDataCheck() {
+    const { counts, problems, tips } = Finance.checkData();
+    const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+    const SHOW = 5; // entries listed per finding
+    let close = () => {};
+
+    const rows = (items) => h("ul", { class: "tx-list show-dates check-list", onClick: () => close() },
+      items.slice(0, SHOW).map((t) => {
+        const row = UI.transactionRow(t);
+        row.querySelector(".tx-meta").prepend(Utils.formatDate(t.date) + " · ");
+        return row;
+      }));
+    const finding = (f, kind) => h("section", { class: "check-finding" },
+      h("h3", { class: "check-title" },
+        icon(kind === "problem" ? "alert" : "list", 18),
+        h("span", { text: f.items ? `${f.title} (${f.items.length})` : f.title })),
+      h("p", { class: "muted small", text: f.text }),
+      f.items ? rows(f.items) : null,
+      f.items && f.items.length > SHOW ? h("p", { class: "muted small", text: `…and ${f.items.length - SHOW} more. You'll find them on the Transactions page.` }) : null,
+      f.accounts ? h("ul", { class: "check-accounts" }, f.accounts.map(({ account, balance }) =>
+        h("li", null, h("span", { text: account.name }), money(balance)))) : null);
+
+    const body = h("div", { class: "data-check" },
+      h("p", { class: "muted", text: counts.transactions
+        ? `Checked ${plural(counts.transactions, "transaction")}, ${plural(counts.accounts, "account")}, ${plural(counts.budgets, "budget")} and ${plural(counts.goals, "goal")}.`
+        : "There are no transactions to check yet." }),
+      problems.length
+        ? h("p", { class: "check-summary" }, icon("alert", 18), h("span", { text: `${plural(problems.length, "thing")} worth checking` }))
+        : h("p", { class: "check-summary" }, icon("check", 18), h("span", { text: "No problems found." })),
+      problems.map((f) => finding(f, "problem")),
+      tips.length ? h("h3", { class: "section-title", text: "Tips (optional)" }) : null,
+      tips.map((f) => finding(f, "tip")),
+      h("p", { class: "muted small check-footnote", text: "This check only looks at your data. It never changes anything. Tap an entry to open it and fix it if needed." }));
+
+    ({ close } = UI.openModal({ title: "Check my data", body }));
+  }
+
   // ---------- Data: backup & restore ----------
   function restore() {
     const input = h("input", { type: "file", accept: ".json,application/json" });
@@ -254,6 +294,8 @@ Views.settings = (() => {
     root.append(UI.card("Your data", {},
       row("Back up", `Download all your data as a file. Do this regularly! ${lastBackup}`,
         h("button", { class: "btn btn-secondary btn-small", type: "button", onClick: App.downloadBackup }, icon("download", 16), "Download backup")),
+      row("Check my data", "Look for possible duplicates, typing mistakes, wrong dates and damaged entries. Nothing is changed.",
+        h("button", { class: "btn btn-ghost btn-small", type: "button", onClick: openDataCheck }, icon("search", 16), "Check now")),
       row("Restore", "Load data from a backup file.",
         h("button", { class: "btn btn-ghost btn-small", type: "button", onClick: restore }, icon("upload", 16), "Restore")),
       safetyCopy ? row("Undo last big change", `${safetyCopy.label} (${takenAt}). A copy of your data from just before it was kept.`,
