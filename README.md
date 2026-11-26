@@ -28,6 +28,7 @@ A website for keeping track of your money. With it you can:
 - Set monthly budgets and see how close you are to each limit, with an alert as soon as an expense takes you close to or over one
 - Create savings goals and track your progress
 - See charts and reports of where your money goes
+- Pick any month and get a plain-English analysis of it: total spent, spending by category, the top category and how it compares with the month before
 - Lock the website with a PIN and hide amounts on screen for privacy
 - Install it on your phone or computer like an app, and use it without internet
 - Check your data for possible duplicates, typing mistakes and odd dates with one button
@@ -111,6 +112,8 @@ To install it anywhere else:
 
 A short summary of each change, newest first. Claude Code adds a line here automatically after making changes (see "Hooks" below).
 
+- **2026-11-26:** New **Monthly analysis** card at the top of **Reports**: pick any month with the ‹ › arrows to see what you spent, where it went, your top category, how it compares with the month before and a short summary in plain words. Nothing new is saved, so your existing records are untouched.
+- **2026-11-26:** Set up **OpenSpec** (the new `openspec/` folder), a planning tool: before building a new feature, Claude writes a short plan (what, why, how, and a task list) for you to check first.
 - **2026-11-24:** New **Settings → Check my data** button lists possible duplicates, likely typing mistakes, odd dates, cash below zero and damaged entries in plain English. It never changes anything; tap an entry to fix it.
 - **2026-11-24:** The Finance Tracker now asks "Possible duplicate?" before saving an entry that matches one you already added (same amount, date and description), so accidental double entries don't inflate your totals.
 - **2026-11-24:** The Finance Tracker now alerts you the moment an expense takes a budget to "Close to limit" (80%) or "Over budget" (100%).
@@ -151,6 +154,7 @@ Type `/hooks` in Claude Code to see, change or switch them off.
 | `plugins/explain-simply/` | The explain simply plugin (one skill that explains technical topics in plain English) |
 | `plugins/smart-expense-analyst/` | The Smart Expense Analyst plugin (one skill that analyses a backup or CSV export and suggests savings) |
 | `.claude-plugin/marketplace.json` | Lists the plugins so Claude Code can install them from this repository |
+| `openspec/` | OpenSpec planning folder: written plans for upcoming changes (`changes/`) and descriptions of what the app does (`specs/`) |
 | `LICENSE.md` | The MIT License |
 
 ## License

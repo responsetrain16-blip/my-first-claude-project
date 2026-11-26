@@ -246,6 +246,80 @@ const near = (a, b) => Math.abs(a - b) < 0.005;
   await wait(300);
   check((await tableRows()).length === 12, "Reports '12 months' shows 12 months");
 
+  // ---------------- Monthly analysis (top card on Reports) ----------------
+  // Same test data: this month 0.10 + 0.20 + 799.70 = 800 spent; last month 999 (Shopping).
+  console.log("\n== Monthly analysis ==");
+  const analysis = () => page.$eval(".analysis-card", (c) => ({
+    first: c.compareDocumentPosition(document.querySelector(".page-actions")) === Node.DOCUMENT_POSITION_FOLLOWING,
+    month: c.querySelector(".month-label").textContent,
+    tiles: [...c.querySelectorAll(".tile")].map((t) => ({
+      label: t.querySelector(".tile-label").textContent.trim(),
+      value: t.querySelector(".tile-value").textContent.trim(),
+      delta: t.querySelector(".tile-delta")?.textContent.trim() || "",
+    })),
+    summary: [...c.querySelectorAll(".analysis-summary li")].map((l) => l.textContent),
+    empty: c.querySelector(".empty-state h3")?.textContent || "",
+    prevDisabled: c.querySelector('[aria-label="Previous month"]').disabled,
+    nextDisabled: c.querySelector('[aria-label="Next month"]').disabled,
+  })).catch(() => null);
+  const tile = (a, start) => a?.tiles.find((t) => t.label.startsWith(start)) || {};
+  const thisLabel = await app(() => Utils.monthLabel(Utils.currentMonthKey()));
+  const lastLabel = await app(() => Utils.monthLabel(Utils.addMonthsToKey(Utils.currentMonthKey(), -1)));
+  const savedBefore = await app(() => localStorage.getItem("finance-tracker-v2"));
+
+  let a = await analysis();
+  check(a && a.first, "Monthly analysis card is shown above the Reports range picker");
+  check(a?.month === thisLabel, "Monthly analysis opens on the current month", a?.month);
+  check(a?.nextDisabled, "can't move Monthly analysis into future months");
+  check(tile(a, "Spent in").value === (await money(800)), "analysis total = this month's expenses only (800; income and transfers excluded)", tile(a, "Spent in").value);
+  check(/20% less/.test(tile(a, "Spent in").delta), "analysis shows 20% less than last month (800 vs 999)", tile(a, "Spent in").delta);
+  check(tile(a, "Compared with").value === (await app(() => Utils.formatMoney(-199, { sign: true }))), "analysis shows the change in money (−199)", tile(a, "Compared with").value);
+  check(/Housing/.test(tile(a, "Top category").value), "analysis names the top category (Housing)", tile(a, "Top category").value);
+  check(a && a.summary.length >= 3 && a.summary.length <= 5, "analysis summary has 3 to 5 sentences", String(a?.summary.length));
+  check(a?.summary.some((s) => s.includes("isn't over yet")), "summary notes that the current month isn't over yet");
+
+  await app(() => App.setPrivacy(true));
+  await wait(250);
+  const privacy = await page.$eval(".analysis-card", (c) => {
+    const amounts = [...c.querySelectorAll(".money")];
+    const walker = document.createTreeWalker(c, NodeFilter.SHOW_TEXT);
+    let leaks = 0;
+    while (walker.nextNode()) if (/\d[.,]\d\d/.test(walker.currentNode.textContent) && !walker.currentNode.parentElement.closest(".money")) leaks++;
+    return { amounts: amounts.length, blurred: amounts.every((e) => getComputedStyle(e).filter.includes("blur")), leaks };
+  });
+  check(privacy.amounts > 0 && privacy.blurred && privacy.leaks === 0, "'Hide amounts' blurs every amount in the analysis, including the summary", JSON.stringify(privacy));
+  await app(() => App.setPrivacy(false));
+  await wait(250);
+
+  await page.click('.analysis-card [aria-label="Previous month"]');
+  await wait(250);
+  a = await analysis();
+  check(a?.month === lastLabel, "'Previous month' moves the analysis back one month", a?.month);
+  check(tile(a, "Spent in").value === (await money(999)), "analysis recalculates for last month (999)", tile(a, "Spent in").value);
+  check(tile(a, "Compared with").value === "Nothing to compare", "analysis says 'Nothing to compare' when the month before has no spending", tile(a, "Compared with").value);
+  check(a?.prevDisabled, "can't move the analysis before the first month with transactions");
+  // Settings → privacy writes to storage, so compare only the transactions
+  const sameTransactions = await app((before) => JSON.stringify(JSON.parse(before).transactions) === JSON.stringify(JSON.parse(localStorage.getItem("finance-tracker-v2")).transactions), savedBefore);
+  check(sameTransactions, "looking at the analysis doesn't change saved transactions");
+
+  // A month with only income shows the friendly empty message
+  const twoAgo = await app(() => {
+    const date = Utils.monthRange(Utils.addMonthsToKey(Utils.currentMonthKey(), -2)).from;
+    const [, bank] = Store.state.accounts;
+    return Store.addTransaction({ type: "income", amount: 10, categoryId: Store.categoriesOf("income")[0].id, accountId: bank.id, date, description: "analysis empty-month test", tags: [] }).id;
+  });
+  await wait(250);
+  await page.click('.analysis-card [aria-label="Previous month"]');
+  await wait(250);
+  a = await analysis();
+  const twoAgoLabel = await app(() => Utils.monthLabel(Utils.addMonthsToKey(Utils.currentMonthKey(), -2)));
+  check(a?.empty === `No spending recorded in ${twoAgoLabel}`, "a month with no expenses shows 'No spending recorded in …'", a?.empty);
+  await page.click('.analysis-card [aria-label="Next month"]');
+  await wait(250);
+  check((await analysis())?.month === lastLabel, "month arrows still work from an empty month");
+  await app((id) => Store.deleteTransaction(id), twoAgo);
+  await wait(250);
+
   // ---------------- UI problems ----------------
   console.log("\n== UI ==");
   await app(() => Store.loadDemoData());

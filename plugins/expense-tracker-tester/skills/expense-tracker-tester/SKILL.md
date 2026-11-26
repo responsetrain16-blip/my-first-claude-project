@@ -55,6 +55,7 @@ If the script can't run (no Chrome, no Node), do the same checks by reading the 
 **Monthly summaries**
 - "This month" figures only include this month's dates; last month's transactions don't leak in, and future-dated ones are flagged.
 - The Budgets month switcher and Reports ranges (6 months / 12 months / this year / all time) show the right months and totals.
+- The Monthly analysis card (top of Reports) counts only expenses, compares correctly with the previous month (money and %), names the top category, can't move into future months or before the first transaction, shows a friendly message for a month with no spending, and blurs every amount (summary included) when "Hide amounts" is on.
 - Budget status: under 80% "On track", 80–100% "Close to limit", over 100% "Over budget".
 
 **UI problems to look for**
