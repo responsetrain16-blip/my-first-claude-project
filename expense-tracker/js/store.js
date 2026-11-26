@@ -658,6 +658,59 @@ const Finance = (() => {
       .sort((a, b) => b.ratio - a.ratio);
   }
 
+  // ---------- Monthly analysis ----------
+  // A plain look at one month's spending (key is "YYYY-MM"), compared with the month
+  // before. Only expenses count (not income or transfers). It is worked out fresh each
+  // time from the transactions — nothing is stored and nothing is changed.
+  function monthAnalysis(key) {
+    const cents = (n) => Math.round(n * 100) / 100; // avoids 0.1 + 0.2 = 0.30000000000000004
+    const prevKey = Utils.addMonthsToKey(key, -1);
+    const expensesIn = (k) => {
+      const { from, to } = Utils.monthRange(k);
+      return inRange(from, to).filter((t) => t.type === "expense");
+    };
+    const now = expensesIn(key);
+    const before = expensesIn(prevKey);
+    const total = cents(sum(now, (t) => t.amount));
+    const prevTotal = cents(sum(before, (t) => t.amount));
+    const count = now.length;
+
+    // Each category this month, largest first, with last month's amount next to it
+    const lastMonth = byCategory(before);
+    const prevBy = new Map(lastMonth.map((g) => [g.category.id, g.total]));
+    const categories = byCategory(now).map((g) => {
+      const prev = cents(prevBy.get(g.category.id) || 0);
+      return { category: g.category, total: cents(g.total), count: g.count, share: total ? g.total / total : 0, prevTotal: prev, change: cents(g.total - prev) };
+    });
+    // Every category that tied for the most spending
+    const top = categories.filter((c) => c.total === categories[0]?.total);
+
+    // Which category went up most and which went down most. A category with no
+    // spending this month (but some last month) counts as $0 now.
+    let biggestRise = null;
+    let biggestFall = null;
+    if (total > 0 && prevTotal > 0) {
+      const thisMonthIds = new Set(categories.map((c) => c.category.id));
+      const changes = categories.map((c) => ({ category: c.category, change: c.change }));
+      for (const g of lastMonth) {
+        if (!thisMonthIds.has(g.category.id)) changes.push({ category: g.category, change: cents(-g.total) });
+      }
+      biggestRise = changes.filter((c) => c.change > 0).sort((a, b) => b.change - a.change)[0] || null;
+      biggestFall = changes.filter((c) => c.change < 0).sort((a, b) => a.change - b.change)[0] || null;
+    }
+
+    // Compared with last month. changeRatio is null when there's nothing to compare with.
+    const change = cents(total - prevTotal);
+    const changeRatio = prevTotal > 0 ? change / prevTotal : null;
+    const aboutTheSame = changeRatio !== null && Math.abs(changeRatio) < 0.005;
+
+    return {
+      key, prevKey, total, count, average: count ? cents(total / count) : 0,
+      categories, top, prevTotal, change, changeRatio, aboutTheSame,
+      biggestRise, biggestFall, isCurrentMonth: key === Utils.currentMonthKey(),
+    };
+  }
+
   function goalSaved(goal) {
     return Math.max(0, sum(goal.contributions, (c) => c.amount));
   }
@@ -793,5 +846,5 @@ const Finance = (() => {
     return { counts: { transactions: transactions.length, accounts: accounts.length, budgets: budgets.length, goals: goals.length }, problems, tips };
   }
 
-  return { inRange, totals, monthTotals, byCategory, accountBalance, totalBalance, monthly, firstMonthKey, budgetStatus, goalSaved, goalMonthlyNeeded, entryKey, checkData };
+  return { inRange, totals, monthTotals, byCategory, accountBalance, totalBalance, monthly, firstMonthKey, budgetStatus, monthAnalysis, goalSaved, goalMonthlyNeeded, entryKey, checkData };
 })();

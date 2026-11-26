@@ -75,6 +75,7 @@ The last line gives a summary, for example `SUMMARY: 48 passed, 0 failed, 3 note
 | **Editing & deleting** | Changes are saved; deleting removes the transaction everywhere; **Undo** brings it back exactly |
 | **Calculations** | Income − expenses = "Left over"; transfers aren't counted as income or spending; account balances and the total balance are exactly right |
 | **Monthly summaries** | "This month" only includes this month; the Budgets month switcher and Reports ranges show the right totals; budget labels change at 80% and 100% |
+| **Monthly analysis** | The card at the top of Reports opens on this month; its total counts only expenses; the change from last month (money and %), the top category and the 3–5 summary sentences are right; the arrows move between months but not into the future or before the first transaction; an empty month shows a friendly message; **Hide amounts** blurs every amount in it |
 | **UI** | No JavaScript errors; no sideways scrolling at phone (390px) or desktop (1366px) width; light and dark mode; the Esc key closes pop-ups |
 
 ## 3. Test by hand
@@ -105,6 +106,7 @@ Open the [live site](https://responsetrain16-blip.github.io/my-first-claude-proj
 **Budgets & reports**
 - [ ] Set a budget and spend close to it. The label changes from "On track" to "Close to limit" (80%) and then "Over budget" (over 100%).
 - [ ] On Reports, switch between 6 months, 12 months, this year and all time.
+- [ ] On Reports, look at the **Monthly analysis** card at the top. Check that "Spent in …" matches "Spent this month" on Home, then use the ‹ › arrows to look at last month. The numbers and summary change, and the › arrow is greyed out on the current month.
 
 **Look & feel**
 - [ ] Switch between light and dark mode in Settings. Everything is readable.

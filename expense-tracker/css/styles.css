@@ -765,6 +765,10 @@ button.bar-row:hover { background: var(--hover); }
 .insights li { display: flex; gap: 10px; align-items: flex-start; }
 .insight-icon { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 8px; background: var(--accent-soft); color: var(--accent); flex-shrink: 0; }
 
+/* Monthly analysis card (top of Reports) */
+.analysis-card .card-header { flex-wrap: wrap; align-items: center; }
+.analysis-summary li > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+
 /* ---------- Settings ---------- */
 .setting-row {
   display: flex;
@@ -995,6 +999,10 @@ button.bar-row:hover { background: var(--hover); }
   .page-actions .segment span { padding: 7px 8px; }
   .tiles-inline { grid-template-columns: 1fr 1fr 1fr; }
   .tiles-inline .tile-value { font-size: 1rem; }
+  /* Monthly analysis: the total gets its own row, the other two share the next */
+  .analysis-tiles { grid-template-columns: 1fr 1fr; }
+  .analysis-tiles .tile:first-child { grid-column: 1 / -1; }
+  .analysis-tiles .tile:first-child .tile-value { font-size: 1.3rem; }
   .month-label { min-width: 0; }
   .keypad { grid-template-columns: repeat(3, 66px); }
   .key { width: 66px; height: 66px; }
